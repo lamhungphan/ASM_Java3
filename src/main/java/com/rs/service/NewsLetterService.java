@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewsLetterService {
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
     private List<Newsletter> list;
 
     public NewsLetterService(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
-        list = new ArrayList<Newsletter>();
+        list = new ArrayList<>();
     }
 
     public void runCrud() throws SQLException, ClassNotFoundException, ServletException, IOException {

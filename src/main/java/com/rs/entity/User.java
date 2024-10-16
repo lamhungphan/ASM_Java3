@@ -9,6 +9,7 @@ public class User {
 	private String fullname;
 	private String username;
 	private Date birthday;
+	private String avatar;
 	private boolean gender;
 	private String mobile;
 	private boolean role; // true = Admin, false = Reporter
@@ -18,7 +19,7 @@ public class User {
 		super();
 	}
 
-	public User(int id, String username, String password, String fullname, Date birthday, boolean gender,
+	public User(int id, String username, String password, String fullname, Date birthday, String avatar, boolean gender,
                 String mobile, String email, boolean role, boolean active) {
 		super();
 		this.id = id;
@@ -26,7 +27,8 @@ public class User {
 		this.password = password;
 		this.fullname = fullname;
 		this.birthday = birthday;
-		this.gender = gender;
+        this.avatar = avatar;
+        this.gender = gender;
 		this.mobile = mobile;
 		this.email = email;
 		this.role = role;
@@ -118,13 +120,11 @@ public class User {
 	}
 
 	public Object[] toInsertData() {
-		Object[] data = { email, password, fullname, username, birthday, gender, mobile, role };
-		return data;
+        return new Object[]{ email, password, fullname, username, birthday, gender, mobile, role };
 	}
 
 	public Object[] toUpdateData() {
-		Object[] data = { email, password, fullname, username, birthday, gender, mobile, role, id };
-		return data;
+        return new Object[]{ email, password, fullname, username, birthday, gender, mobile, role, id };
 	}
 
     public boolean getActive() {
@@ -133,5 +133,17 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+	public String getAvatarPath() {
+		return "/photo/" + avatar;
+	}
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

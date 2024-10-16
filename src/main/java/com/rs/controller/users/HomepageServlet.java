@@ -1,21 +1,14 @@
 package com.rs.controller.users;
 
-import com.rs.dao.ArticleDAO;
-import com.rs.entity.Article;
 import com.rs.service.ArticleService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.RETURN;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Servlet implementation class NewsServlet
@@ -24,7 +17,6 @@ import java.util.List;
         "/user/detail/*", "/user/search"})
 public class HomepageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private ArticleService articleService;
 
     public HomepageServlet() {
         super();
@@ -36,7 +28,7 @@ public class HomepageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String uri = request.getRequestURI();
-        articleService = new ArticleService(request,response);
+        ArticleService articleService = new ArticleService(request, response);
         try {
             if (uri.contains("home")) {
                 articleService.homepage();
@@ -44,7 +36,7 @@ public class HomepageServlet extends HttpServlet {
                 articleService.detailPage();
             } else if (uri.contains("search") && !request.getParameter("search").isBlank()) {
                 articleService.searchEngine();
-            } else if (request.getParameter("search").isBlank()) {
+            } else if (request.getParameter("search")!=null&&request.getParameter("search").isBlank()) {
                 articleService.homepage();
             } else {
                 articleService.listPage();

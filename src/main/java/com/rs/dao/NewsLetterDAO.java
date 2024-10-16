@@ -52,20 +52,17 @@ public class NewsLetterDAO {
 //                }
 //            }
 //        }
-        boolean result = XJdbc.getValue(sql, email)!=null;
-        return result;
+        return XJdbc.getValue(sql, email)!=null;
     }
     
     public static List<Newsletter> getAllNewsletter(){
     	String sql = "SELECT * FROM NEWSLETTERS order by Enabled desc";
-    	List<Newsletter> list = XJdbc.getResultList(Newsletter.class, sql);
-    	return list;
+        return XJdbc.getResultList(Newsletter.class, sql);
     }
     
     public static List<String> getEnabledEmailList(){
     	String sql = "SELECT Email FROM NEWSLETTERS WHERE Enabled = 1";
-    	List<String> list = XJdbc.getResultList(String.class, sql);
-    	return list;
+        return XJdbc.getResultList(String.class, sql);
     }
     
     public static Boolean checkEnabled(String email){
