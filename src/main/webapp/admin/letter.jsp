@@ -17,14 +17,14 @@
 					<td>${vs.count}</td>
 					<td>${item.email}</td>
 					<td>${item.enabled}</td>
-					<td><a href="${pageContext.request.contextPath}/admin/letter/edit/${vs.count}">Xem
+					<td><a href="${pageContext.request.contextPath}/letter/edit/${vs.count}">Xem
 							chi tiết...</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
 	<div class="card p-4">
-	<c:url value="/admin/letter" var="root"/>
+	<c:url value="/letter" var="root"/>
 		<h2 class="text-center mb-4">Newsletter chi tiết</h2>
 		<form method="post">
 			<div class="mb-3">

@@ -65,13 +65,13 @@
 		<c:if test="${sessionScope.currUser.role==true}">
 			<div class="container mt-3">
 				<nav class="nav justify-content-center mb-4">
-					<a class="nav-link" href="${pageContext.request.contextPath}/admin/article">Tin tức</a> <span
+					<a class="nav-link" href="${pageContext.request.contextPath}/admin/news">Tin tức</a> <span
 						class="nav-link">:</span> <a class="nav-link"
 						href="${pageContext.request.contextPath}/admin/category">Loại tin</a> <span
 						class="nav-link">:</span> <a class="nav-link"
-						href="${pageContext.request.contextPath}/admin/user">Người dùng</a> <span
+						href="${pageContext.request.contextPath}/admin/user/list">Người dùng</a> <span
 						class="nav-link">:</span> <a class="nav-link"
-						href="${pageContext.request.contextPath}/admin/letter">Newsletter</a>
+						href="${pageContext.request.contextPath}/letter/list">Newsletter</a>
 				</nav>
 			</div>
 		</c:if>

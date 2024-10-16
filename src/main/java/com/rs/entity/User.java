@@ -12,13 +12,14 @@ public class User {
 	private boolean gender;
 	private String mobile;
 	private boolean role; // true = Admin, false = Reporter
+	private boolean active;
 
 	public User() {
 		super();
 	}
 
 	public User(int id, String username, String password, String fullname, Date birthday, boolean gender,
-				String mobile, String email, boolean role) {
+                String mobile, String email, boolean role, boolean active) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -29,7 +30,8 @@ public class User {
 		this.mobile = mobile;
 		this.email = email;
 		this.role = role;
-	}
+        this.active = active;
+    }
 
 	public int getId() {
 		return id;
@@ -124,4 +126,12 @@ public class User {
 		Object[] data = { email, password, fullname, username, birthday, gender, mobile, role, id };
 		return data;
 	}
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

@@ -36,16 +36,21 @@ public class HomepageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String uri = request.getRequestURI();
-        articleService = new ArticleService( request, response);
-
-        if (uri.contains("home")) {
-            articleService.homepage();
-        } else if (uri.contains("detail")) {
-            articleService.detailPage();
-        } else if (uri.contains("search") && !request.getParameter("search").isBlank()) {
-            articleService.searchEngine();
-        } else {
-            articleService.listPage();
+        articleService = new ArticleService(response, request);
+        try {
+            if (uri.contains("home")) {
+                articleService.homepage();
+            } else if (uri.contains("detail")) {
+                articleService.detailPage();
+            } else if (uri.contains("search") && !request.getParameter("search").isBlank()) {
+                articleService.searchEngine();
+            } else if (request.getParameter("search").isBlank()) {
+                articleService.homepage();
+            } else {
+                articleService.listPage();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
