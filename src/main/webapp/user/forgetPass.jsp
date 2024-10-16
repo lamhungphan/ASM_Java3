@@ -8,10 +8,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<c:url var="root" value="/user/forgetPass"/>
+	<c:url var="root" value="/user"/>
 	<div class="d-flex justify-content-center align-items-center vh-100">
 		<div class="card p-4" style="width: 25rem;">
-			<form action="${root}" method="post">
+			<form action="${root}/forgetPass" method="post">
 				<c:if test="${sessionScope.isConfirm==false}">
 					<h2 class="text-center">Hãy nhập email của bạn</h2>
 					<div class="mb-3">
@@ -36,7 +36,6 @@
 				<h3 style="color: red;">${error}</h3>
 				<button type="submit" class="btn btn-primary w-100">Tiếp
 					tục</button>
-				<h3 style="color: red;">${error}</h3>
 			</form>
 		</div>
 	</div>

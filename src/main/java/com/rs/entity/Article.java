@@ -17,13 +17,14 @@ public class Article {
 	private int viewCount;
 	private int categoryId;
 	private boolean home;
+	private boolean active;
 
 	public Article() {
 		super();
 	}
 
 	public Article(int id, String title, String content, String image, Date postedDate, int author, int viewCount,
-				   int categoryId, boolean home) {
+                   int categoryId, boolean home, boolean active) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -33,7 +34,8 @@ public class Article {
 		this.viewCount = viewCount;
 		this.categoryId = categoryId;
 		this.home = home;
-	}
+        this.active = active;
+    }
 
 	public int getId() {
 		return id;
@@ -138,4 +140,11 @@ public class Article {
 	    return this.content.length() > 100 ? this.content.substring(0, 100) + "..." : this.content;
 	}
 
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

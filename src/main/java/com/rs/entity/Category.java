@@ -3,15 +3,17 @@ package com.rs.entity;
 public class Category {
 	private int id;
 	private String name;
+	private boolean active;
 
 	public Category() {
 		super();
 	}
 
-	public Category(int id, String name) {
+	public Category(int id, String name, boolean active) {
 		this.id = id;
 		this.name = name;
-	}
+        this.active = active;
+    }
 
 	public int getId() {
 		return id;
@@ -42,4 +44,12 @@ public class Category {
 		Object[] data = { name, id };
 		return data;
 	}
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

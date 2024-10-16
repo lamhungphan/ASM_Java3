@@ -4,7 +4,7 @@
 <div>
 	<!-- Search Bar -->
 	<div style="margin: auto; margin-bottom: 15px; margin-top: 15px" class="border-solid col-md-4 text-center">
-		<form action="${pageContext.request.contextPath}/admin/article/search"
+		<form action="${pageContext.request.contextPath}/admin/news/search"
 			class="d-inline-block w-100">
 			<div class="input-group">
 				<input type="text" class="form-control"
@@ -24,7 +24,7 @@
 		<thead class="table-light">
 			<tr>
 				<c:forTokens var="col"
-					items="Id,Tác giả,Loại tin,Tiêu đề,Ngày đăng tải,Lượt xem,Nội dung"
+					items="Id,Tác giả,Loại tin,Tiêu đề,Ngày đăng tải,Lượt xem,Trang chủ"
 					delims=",">
 					<th>${col}</th>
 				</c:forTokens>
@@ -40,12 +40,13 @@
 					<td>${article.title}</td>
 					<td>${article.postedDate}</td>
 					<td>${article.viewCount}</td>
-					<td><a href="${pageContext.request.contextPath}/admin/article/edit/${article.id}">Xem
+					<td>${article.home}</td>
+					<td><a href="${pageContext.request.contextPath}/admin/news/edit/${article.id}">Xem
 							chi tiết...</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	<a href="${pageContext.request.contextPath}/admin/article/blank" class="btn btn-primary" ${sessionScope.currUser.role==true?'hidden':''}>Tạo
+	<a href="${pageContext.request.contextPath}/admin/news/blank" class="btn btn-primary" ${sessionScope.currUser.role==true?'hidden':''}>Tạo
 		tin mới</a>
 </div>

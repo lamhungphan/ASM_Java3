@@ -92,11 +92,13 @@
 				<div class="card-header bg-secondary text-white">Đăng ký nhận
 					tin</div>
 				<div class="card-body">
-					<form action="${pageContext.request.contextPath}/user/subscribe" method="post"
+					<form action="${pageContext.request.contextPath}/letter/subscribe" method="post"
 						class="d-flex">
 						<input name="email" type="email"
 							class="form-control form-control-sm me-2"
 							placeholder="newsletter@example.com">
+						<div class="alert alert-success text-red">${errorMess}</div>
+						<div class="alert alert-success text-green">${message}</div>
 						<button class="btn btn-primary btn-sm" type="submit">
 							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
 								fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
@@ -107,9 +109,6 @@
 							</svg>
 						</button>
 					</form>
-					<c:if test="${not empty message}">
-						<div class="alert alert-success">${message}</div>
-					</c:if>
 				</div>
 			</div>
 		</div>

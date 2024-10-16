@@ -32,7 +32,7 @@
                         <div class="card-body">
                             <h5 class="card-title">${relatedNews.title}</h5>
                             <p class="card-text">${relatedNews.excerpt}</p>
-                            <a href="${pageContext.request.contextPath}/user/detail/relatedNews.id"
+                            <a href="${pageContext.request.contextPath}/user/detail/${relatedNews.id}"
                                class="btn btn-primary">Xem chi tiết</a>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
     </div>
 
     <div class="mt-4 text-center">
-        <a href="${pageContext.request.contextPath}/user/views/home.jsp"
+        <a href="${pageContext.request.contextPath}/user/home"
            class="btn btn-primary position-fixed bottom-0 end-0 m-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list"
                  viewBox="0 0 16 16">
