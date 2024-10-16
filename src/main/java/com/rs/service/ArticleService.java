@@ -2,6 +2,8 @@ package com.rs.service;
 
 import com.rs.dao.ArticleDAO;
 import com.rs.entity.Article;
+import com.rs.util.other.Academics;
+import com.rs.util.other.Arguments;
 import com.rs.util.other.XCookie;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ArticleService {
 
@@ -76,40 +79,28 @@ public class ArticleService {
 
     public void listPage() {
         String path = request.getServletPath();
-        String category = "";
-        switch (path) {
-            case "culture":
-                category = "Văn hoá";
-                break;
-            case "tech":
-                category = "Công nghệ";
-                break;
-            case "law":
-                category = "Pháp luật";
-                break;
-            case "sports":
-                category = "Thể thao";
-                break;
-            case "travel":
-                category = "Du lịch";
-                break;
-        }
-
+        AtomicReference<String> category = new AtomicReference<>("");
+        Academics.switchCaseFirst(true, null,
+                new Arguments(path.contains("culture"), ()-> category.set("Văn hoá")),
+                new Arguments(path.contains("tech"), ()-> category.set("Công nghệ")),
+                new Arguments(path.contains("law"), ()-> category.set("Pháp luật")),
+                new Arguments(path.contains("sports"), ()-> category.set("Thể thao")),
+                new Arguments(path.contains("travel"), ()-> category.set("Du lịch")) );
         try {
-            articleList = ArticleDAO.getNewsByCategory(category);
+            articleList = ArticleDAO.getNewsByCategory(category.get());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        request.setAttribute("newsList", articleList);
+        request.setAttribute("articleList", articleList);
+        request.setAttribute("category", category.get());
         request.setAttribute("view", "/user/newsList.jsp");
     }
 
     public void detailPage() {
         String id = request.getPathInfo().substring(1);
-
         try {
             Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
-            request.setAttribute("news", article);
+            request.setAttribute("article", article);
             if (!viewdIds.contains(article.getId() + "")) {
                 viewdIds += article.getId() + "C";
             }
@@ -129,12 +120,10 @@ public class ArticleService {
         String searchQuery = request.getParameter("search");
         try {
             articleList = ArticleDAO.searchNews(searchQuery);
-            request.setAttribute("newsList", articleList);
+            request.setAttribute("articleList", articleList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         request.setAttribute("view", "/user/newsList.jsp");
     }
-
-
 }
