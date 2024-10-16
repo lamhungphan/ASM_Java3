@@ -28,18 +28,18 @@ import java.util.Map;
  */
 public final class XJdbc {
 
-	private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+//	private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	private static String url = "jdbc:mysql://localhost:3306/java3_asm";
 	private static Connection con = null;
 
 	static {
 		try {
-			Class.forName(DRIVER);
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			openConnection();
-		} catch (ClassNotFoundException | SQLException ex) {
+		} catch (SQLException | ClassNotFoundException ex) {
 			throw new RuntimeException(ex);
 		}
-	}
+    }
 
 	private static final void openConnection() throws SQLException {
 		if(con==null||con.isClosed()) {

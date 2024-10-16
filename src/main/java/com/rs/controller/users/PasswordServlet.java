@@ -30,13 +30,13 @@ public class PasswordServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String path = request.getServletPath();
 		if (path.contains("changePass")) {
-			request.setAttribute("view", "/user/views/changePass.jsp");
+			request.setAttribute("view", "/user/changePass.jsp");
 		}
 		else if(path.contains("forgetPass")) {
 			if(request.getSession().getAttribute("isConfirm")==null) {
 				request.getSession().setAttribute("isConfirm", false);
 			}
-			request.setAttribute("view", "/user/views/forgetPass.jsp");
+			request.setAttribute("view", "/user/forgetPass.jsp");
 		}
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}
@@ -56,11 +56,11 @@ public class PasswordServlet extends HttpServlet {
 			User currUser = (User) request.getSession().getAttribute("currUser");
 			if(!PasswordUtil.checkPassword(currPass, currUser.getPassword())) {
 				request.setAttribute("error", "Mật khẩu hiện tại không khớp");
-				request.setAttribute("view", "/user/views/changePass.jsp");
+				request.setAttribute("view", "/user/changePass.jsp");
 			}
 			else if(!newPass.equals(confirmPass)) {
 				request.setAttribute("error", "Mật khẩu xác nhận không khớp");
-				request.setAttribute("view", "/user/views/changePass.jsp");
+				request.setAttribute("view", "/user/changePass.jsp");
 			}
 			else {
 				currUser.setPassword(PasswordUtil.hashPassword(newPass));
@@ -71,7 +71,7 @@ public class PasswordServlet extends HttpServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				request.setAttribute("view", "/user/views/login.jsp");
+				request.setAttribute("view", "/user/login.jsp");
 			}
 		}
 		else if(path.endsWith("forgetPass")) {
@@ -103,11 +103,11 @@ public class PasswordServlet extends HttpServlet {
 							request.getSession().setAttribute("confirmKey", key);
 							request.getSession().setAttribute("passChangeId", temp.getId());
 							request.setAttribute("formAction", "/forgetPass/confirm");
-							request.getRequestDispatcher("/user/views/confirmEmail.jsp").forward(request, response);
+							request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
 							return;
 						} else {
 							request.setAttribute("error", "Có lỗi xảy ra");
-							request.setAttribute("view", "/user/views/register.jsp");
+							request.setAttribute("view", "/user/register.jsp");
 						}
 					}
 				} catch (ClassNotFoundException | SQLException e) {

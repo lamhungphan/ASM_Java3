@@ -62,10 +62,7 @@
                 </svg>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <c:if test="${sessionScope.currUser==null}">
-                    <li><a class="dropdown-item" href="${path}/login">Đăng nhập</a></li>
-                    <li><a class="dropdown-item" href="${path}/register">Đăng ký</a></li>
-                </c:if>
+
                 <c:if test="${sessionScope.currUser!=null}">
                     <li><a class="dropdown-item" href="${pageContext.request.contextPath}/admin/article">Trang
                         quản trị</a></li>
@@ -76,6 +73,10 @@
                            href="${pageContext.request.contextPath}/user/changePass">Đổi mật khẩu</a></li>
                     <li><a class="dropdown-item" href="${path}/logout">Đăng
                         xuất</a></li>
+                </c:if>
+                <c:if test="${sessionScope.currUser==null}">
+                    <li><a class="dropdown-item" href="${path}/login">Đăng nhập</a></li>
+                    <li><a class="dropdown-item" href="${path}/register">Đăng ký</a></li>
                 </c:if>
             </ul>
         </div>
