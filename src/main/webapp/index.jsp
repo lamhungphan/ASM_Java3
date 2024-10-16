@@ -34,7 +34,7 @@
 <div class="container row align-items-center">
     <!-- Newspaper Name -->
     <div class="col-md-4 text-start">
-        <h1>Báo Dân Trí</h1>
+        <img src="${pageContext.request.contextPath}/photo/logo.png" width="60%" alt="Logo" />
     </div>
 
     <!-- Search Bar -->

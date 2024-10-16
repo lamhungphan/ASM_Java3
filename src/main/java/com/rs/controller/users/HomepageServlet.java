@@ -36,7 +36,7 @@ public class HomepageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String uri = request.getRequestURI();
-        articleService = new ArticleService(response, request);
+        articleService = new ArticleService(request,response);
         try {
             if (uri.contains("home")) {
                 articleService.homepage();

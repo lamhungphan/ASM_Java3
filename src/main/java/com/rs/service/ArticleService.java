@@ -38,9 +38,7 @@ public class ArticleService {
     private HttpServletRequest request;
     private HttpServletResponse response;
 
-    private static String viewdIds = "";
-
-    public ArticleService(HttpServletResponse response, HttpServletRequest request) {
+    public ArticleService(HttpServletRequest request, HttpServletResponse response) {
         this.response = response;
         this.request = request;
         this.articleList = new ArrayList<>();
@@ -58,25 +56,17 @@ public class ArticleService {
 
         viewdList = new ArrayList<>();
         String[] viewedIds = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("viewedArticles")) {
-                    viewedIds = cookies[i].getValue().split("C");
-                    break;
-                }
+        XCookie xCookie = new XCookie(request, response);
+        viewedIds = xCookie.getValue("viewedArticles").split("C");
+
+        for (String id : viewedIds) {
+            Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
+            viewdList.add(article);
+            if (viewdList.size() == 6) {
+                break;
             }
         }
 
-        if (viewedIds != null) {
-            for (String id : viewedIds) {
-                Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
-                viewdList.add(article);
-                if (viewdList.size() == 6) {
-                    break;
-                }
-            }
-        }
         request.setAttribute("newsList", articleList);
         request.setAttribute("homePageList", homePageList);
         request.setAttribute("latestList", latestList);
@@ -116,11 +106,14 @@ public class ArticleService {
         String id = request.getPathInfo().substring(1);
         Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
         request.setAttribute("article", article);
-        if (!viewdIds.contains(article.getId() + "")) {
-            viewdIds += article.getId() + "C";
+        String viewdIds = new XCookie(request, response).getValue("viewArticle");
+        if (viewdIds.contains("null")) {
+            viewdIds = String.valueOf(article.getId());
+        } else if (!viewdIds.contains(article.getId() + "")) {
+            viewdIds = article.getId() + "C" + viewdIds;
         }
         XCookie cookie = new XCookie(request, response);
-        cookie.create("viewArticle", viewdIds.substring(0, viewdIds.length() - 1), 60 * 60 * 24);
+        cookie.create("viewArticle", viewdIds, 60 * 60 * 24);
         List<Article> relatedNews = ArticleDAO.getRelatedNews(article.getCategoryId(), article.getId());
         request.setAttribute("relatedNewsList", relatedNews);
         request.setAttribute("view", "/user/newsDetail.jsp");
@@ -167,7 +160,7 @@ public class ArticleService {
         article.setImage(img.getSubmittedFileName());
         article.setPostedDate(new Date());
         article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
-        article.setHome(request.getParameter("onHome")!=null);
+        article.setHome(request.getParameter("onHome") != null);
         ArticleDAO.addNews(article);
         request.setAttribute("article", article);
         request.setAttribute("action", "edit");
@@ -182,7 +175,7 @@ public class ArticleService {
         }
         article.setPostedDate(new Date());
         article.setId(Integer.parseInt(request.getParameter("repId").substring(2)));
-        article.setHome(request.getParameter("onHome")!=null);
+        article.setHome(request.getParameter("onHome") != null);
         ArticleDAO.updateNews(article);
         request.setAttribute("article", article);
         request.setAttribute("action", "edit");
