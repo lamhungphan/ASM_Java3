@@ -10,10 +10,9 @@
     <form action="${url}" method="post" enctype="multipart/form-data">
 
         <div class="mb-3">
-            <label for="repId" class="form-label">Tiêu đề</label> <input
+            <label for="repId" class="form-label">Id</label> <input
                 name="repId" type="text" id="repId" class="form-control"
-                value="${news.repId}"
-        ${sessionScope.currUser.role=='true'?'readonly':''}>
+                value="${news.repId}" readonly>
         </div>
 
         <div class="mb-3">
@@ -53,7 +52,8 @@
             <textarea rows="10" name="content" id="content" class="form-control"
             ${sessionScope.currUser.role=='true'?'readonly':''}>${news.content}</textarea>
         </div>
-
+        <input type="checkbox" name="onHome" ${news.home==true?'checked':''}>
+        <label>Cho phép lên trang chủ?</label><br>
         <c:if test="${sessionScope.currUser.role=='false'}">
             <div class="text-center">
                 <button formaction="${url}/create" ${action=='edit'?'hidden':''}
@@ -71,8 +71,7 @@
             </div>
         </c:if>
         <c:if test="${sessionScope.currUser.role=='true'}">
-            <input type="checkbox" name="home">
-            <label>Cho phép lên trang chủ?</label><br>
+            <button formaction="${url}/update" class="btn btn-warning">Sửa</button>
             <button formaction="${url}/delete" class="btn btn-danger">Xóa</button>
             <br>
         </c:if>

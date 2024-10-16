@@ -78,8 +78,12 @@ public class NewsCrudServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
-		request.setAttribute("path", "/admin/newsDetail.jsp");
+        try {
+            new ArticleService(response,request).articleIUD();
+        } catch (SQLException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        request.setAttribute("path", "/admin/newsDetail.jsp");
 		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 	

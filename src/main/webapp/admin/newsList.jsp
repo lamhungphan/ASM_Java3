@@ -24,7 +24,7 @@
 		<thead class="table-light">
 			<tr>
 				<c:forTokens var="col"
-					items="Id,Tác giả,Loại tin,Tiêu đề,Ngày đăng tải,Lượt xem,Nội dung"
+					items="Id,Tác giả,Loại tin,Tiêu đề,Ngày đăng tải,Lượt xem,Trang chủ"
 					delims=",">
 					<th>${col}</th>
 				</c:forTokens>
@@ -40,6 +40,7 @@
 					<td>${article.title}</td>
 					<td>${article.postedDate}</td>
 					<td>${article.viewCount}</td>
+					<td>${article.home}</td>
 					<td><a href="${pageContext.request.contextPath}/admin/article/edit/${article.id}">Xem
 							chi tiết...</a></td>
 				</tr>
