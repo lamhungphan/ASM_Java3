@@ -202,8 +202,11 @@
 						<input name="email" type="email"
 							class="form-control form-control-sm me-2"
 							placeholder="newsletter@example.com">
-						<div class="alert alert-success text-red">${errorMess}</div>
-						<div class="alert alert-success text-green">${message}</div>
+						<div>
+							<span class="text-red">${errorMess}</span>>
+							<span class="text-green">${message}</span>>
+						</div>
+
 						<button class="btn btn-primary btn-sm" type="submit">
 							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
 								fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">

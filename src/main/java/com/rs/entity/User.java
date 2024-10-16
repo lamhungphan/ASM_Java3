@@ -3,7 +3,7 @@ package com.rs.entity;
 import java.sql.Date;
 
 public class User {
-	private int id;
+	private long id;
 	private String email;
 	private String password;
 	private String fullname;
@@ -19,7 +19,7 @@ public class User {
 		super();
 	}
 
-	public User(int id, String username, String password, String fullname, Date birthday, String avatar, boolean gender,
+	public User(long id, String username, String password, String fullname, Date birthday, String avatar, boolean gender,
                 String mobile, String email, boolean role, boolean active) {
 		super();
 		this.id = id;
@@ -35,11 +35,11 @@ public class User {
         this.active = active;
     }
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -120,11 +120,11 @@ public class User {
 	}
 
 	public Object[] toInsertData() {
-        return new Object[]{ email, password, fullname, username, birthday, gender, mobile, role };
+        return new Object[]{ email, password, fullname, username, avatar, birthday, gender, mobile, role };
 	}
 
 	public Object[] toUpdateData() {
-        return new Object[]{ email, password, fullname, username, birthday, gender, mobile, role, id };
+        return new Object[]{ email, password, fullname, username, avatar, birthday, gender, mobile, role, id };
 	}
 
     public boolean getActive() {

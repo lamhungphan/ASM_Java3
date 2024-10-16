@@ -33,7 +33,7 @@ public class CategoryDAO {
         XJdbc.IUD(sql, cate.toUpdateData());
     }
 
-    public static void deleteCategory(int id) throws SQLException, ClassNotFoundException {
+    public static void deleteCategory(long id) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE CATEGORIES SET Active = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
@@ -42,7 +42,7 @@ public class CategoryDAO {
         XJdbc.IUD(sql, id);
     }
     
-    public static Category getCategoryById(int id) {
+    public static Category getCategoryById(long id) {
     	String sql = "SELECT * FROM CATEGORIES WHERE Id=? and Active=1";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);

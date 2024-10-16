@@ -11,7 +11,6 @@ import com.rs.util.other.Arguments;
 import com.rs.util.other.XCookie;
 import com.rs.util.other.XFile;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
@@ -30,13 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ArticleService {
 
-    private List<Article> articleList = null;
-    private List<Article> homePageList = null;
-    private List<Article> latestList = null;
-    private List<Article> mostViewdList = null;
-    private List<Article> viewdList = null;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private List<Article> articleList;
+    private List<Article> homePageList;
+    private List<Article> latestList;
+    private List<Article> mostViewdList;
+    private List<Article> viewdList;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
     public ArticleService(HttpServletRequest request, HttpServletResponse response) {
         this.response = response;
@@ -55,7 +54,7 @@ public class ArticleService {
         mostViewdList = ArticleDAO.getTopNewsByViews();
 
         viewdList = new ArrayList<>();
-        String[] viewedIds = null;
+        String[] viewedIds;
         XCookie xCookie = new XCookie(request, response);
         viewedIds = xCookie.getValue("viewedArticles").split("C");
 
@@ -73,8 +72,8 @@ public class ArticleService {
         request.setAttribute("homePageList", homePageList);
         request.setAttribute("latestList", latestList);
         request.setAttribute("mostViewdList", mostViewdList);
-        request.setAttribute("view", "/user/home.jsp");
         request.setAttribute("viewdList", viewdList);
+        request.setAttribute("view", "/user/home.jsp");
     }
 
     public void listPage() throws SQLException {
@@ -158,10 +157,12 @@ public class ArticleService {
     private void articleCreate(Article article) throws ServletException, IOException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
         BeanUtils.populate(article, request.getParameterMap());
         Part img = request.getPart("img");
-        XFile.upload(request, img);
-        article.setImage(img.getSubmittedFileName());
+        if (img != null && !img.getSubmittedFileName().isBlank()) {
+            XFile.upload(request, img);
+            article.setImage(img.getSubmittedFileName());
+        }
         article.setPostedDate(new Date());
-        article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
+        article.setAuthor(((Article) request.getSession().getAttribute("currUser")).getId());
         article.setHome(request.getParameter("onHome") != null);
         ArticleDAO.addNews(article);
         request.setAttribute("article", article);

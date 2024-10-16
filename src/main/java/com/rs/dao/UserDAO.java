@@ -40,7 +40,7 @@ public class UserDAO {
         XJdbc.IUD(sql, user.toUpdateData());
     }
 
-    public static void deleteUser(int id) throws SQLException, ClassNotFoundException {
+    public static void deleteUser(long id) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE USERS SET ACTIVE = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
@@ -49,7 +49,7 @@ public class UserDAO {
         XJdbc.IUD(sql, id);
     }
 
-    public static User getUserById(int id) throws SQLException {
+    public static User getUserById(long id) throws SQLException {
     	String sql = "SELECT * FROM USERS WHERE Id=?";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -81,9 +81,9 @@ public class UserDAO {
 		return null; // null nếu không tìm thấy user
 	}
 	
-	public static int generateNewId() throws ClassNotFoundException, SQLException {
+	public static long generateNewId() throws ClassNotFoundException, SQLException {
 		String sql = "select Id from USERS order by Id desc limit 1";
-		return (int) XJdbc.getValue(sql) +1;
+		return (long) XJdbc.getValue(sql) +1;
 	}
 
 	public static List<User> getBlacklisted(){

@@ -48,7 +48,7 @@ public class ArticleDAO {
 		XJdbc.IUD(sql, article.toUpdateData());
 	}
 
-	public static void deleteNews(int id) throws SQLException, ClassNotFoundException {
+	public static void deleteNews(long id) throws SQLException, ClassNotFoundException {
 		String sql = "UPDATE NEWS SET Home = 0, Active = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
@@ -57,12 +57,12 @@ public class ArticleDAO {
 		XJdbc.IUD(sql, id);
 	}
 
-	public static void noWayHome(int id) throws SQLException, ClassNotFoundException {
+	public static void noWayHome(long id) throws SQLException, ClassNotFoundException {
 		String sql = "UPDATE NEWS SET Home = 0 WHERE Id = ?";
 		XJdbc.IUD(sql, id);
 	}
 
-	public static Article getNewsById(int id) throws SQLException {
+	public static Article getNewsById(long id) throws SQLException {
 		String sql = "SELECT * FROM NEWS WHERE Id=?";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -98,7 +98,7 @@ public class ArticleDAO {
 		return XJdbc.getResultList(Article.class, sql);
 	}
 
-	public static List<Article> getAllNewsByAuthor(int authorID) throws SQLException {
+	public static List<Article> getAllNewsByAuthor(long authorID) throws SQLException {
 		String sql = "SELECT * FROM NEWS WHERE Author = ?";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class ArticleDAO {
         return XJdbc.getResultList(Article.class, sql, "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%");
 	}
 	
-	public static List<Article> searchNewsByAuthor(int authorID, String keyword) throws SQLException {
+	public static List<Article> searchNewsByAuthor(long authorID, String keyword) throws SQLException {
 		String sql = "SELECT NEWS.*" +
 				" FROM NEWS JOIN USERS ON NEWS.Author = USERS.Id JOIN CATEGORIES ON NEWS.CategoryId = CATEGORIES.Id " +
 				"WHERE USERS.Id = ? and ( Title like ? or Content like ? or USERS.Fullname like ? or CATEGORIES.Name like ? )";
@@ -160,13 +160,13 @@ public class ArticleDAO {
 
 	
 
-	public static List<Article> getRelatedNews(int categoryId, int newsId) throws SQLException {
+	public static List<Article> getRelatedNews(long categoryId, long newsId) throws SQLException {
 		String sql = "SELECT * FROM News WHERE categoryId = ? AND id <> ? limit 5";
 		return XJdbc.getResultList(Article.class, sql, categoryId, newsId);
 	}
 
-	public static int generateNewId() throws ClassNotFoundException, SQLException {
+	public static long generateNewId() throws ClassNotFoundException, SQLException {
 		String sql = "select count(*) from NEWS";
-		return (int) XJdbc.getValue(sql) + 1;
+		return (long) XJdbc.getValue(sql) + 1;
 	}
 }

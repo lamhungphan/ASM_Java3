@@ -2,6 +2,7 @@ package com.rs.controller.admin;
 
 import com.rs.service.UserService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 /**
  * Servlet implementation class UserServlet
  */
+@MultipartConfig()
 @WebServlet({"/admin/user/list", "/admin/user/edit/*", "/admin/user/blank", "/admin/user/create", "/admin/user/update",
         "/admin/user/delete", "/admin/user/reset"})
 public class UserServlet extends HttpServlet {

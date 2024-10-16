@@ -32,8 +32,12 @@ public class NewsLetterServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
         try {
-            new NewsLetterService(request,response).runCrud();
-			new NewsLetterService(request,response).subscribe();
+            String path = request.getServletPath();
+            if(path.contains("subscribe")) {
+                new NewsLetterService(request,response).subscribe();
+            } else {
+                new NewsLetterService(request,response).runCrud();
+            }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
