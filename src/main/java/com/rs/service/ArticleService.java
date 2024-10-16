@@ -26,7 +26,7 @@ public class ArticleService {
 
     private static String viewdIds = "";
 
-    public ArticleService(HttpServletResponse response, HttpServletRequest request) {
+    public ArticleService( HttpServletRequest request, HttpServletResponse response) {
         this.response = response;
         this.request = request;
         this.articleList = new ArrayList<>();
@@ -46,6 +46,7 @@ public class ArticleService {
             viewdList = new ArrayList<>();
             String[] viewedIds = null;
             Cookie[] cookies = request.getCookies();
+
             if (cookies != null) {
                 for (int i = 0; i < cookies.length; i++) {
                     if (cookies[i].getName().equals("viewedArticles")) {
@@ -54,7 +55,6 @@ public class ArticleService {
                     }
                 }
             }
-
             if (viewedIds != null) {
                 for (String id : viewedIds) {
                     Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
@@ -64,8 +64,6 @@ public class ArticleService {
                     }
                 }
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,11 +79,11 @@ public class ArticleService {
         String path = request.getServletPath();
         AtomicReference<String> category = new AtomicReference<>("");
         Academics.switchCaseFirst(true, null,
-                new Arguments(path.contains("culture"), ()-> category.set("Văn hoá")),
-                new Arguments(path.contains("tech"), ()-> category.set("Công nghệ")),
-                new Arguments(path.contains("law"), ()-> category.set("Pháp luật")),
-                new Arguments(path.contains("sports"), ()-> category.set("Thể thao")),
-                new Arguments(path.contains("travel"), ()-> category.set("Du lịch")) );
+                new Arguments(path.contains("culture"), () -> category.set("Văn hoá")),
+                new Arguments(path.contains("tech"), () -> category.set("Công nghệ")),
+                new Arguments(path.contains("law"), () -> category.set("Pháp luật")),
+                new Arguments(path.contains("sports"), () -> category.set("Thể thao")),
+                new Arguments(path.contains("travel"), () -> category.set("Du lịch")));
         try {
             articleList = ArticleDAO.getNewsByCategory(category.get());
         } catch (SQLException e) {
@@ -117,7 +115,10 @@ public class ArticleService {
     }
 
     public void searchEngine() {
-        String searchQuery = request.getParameter("search");
+        String searchQuery = request.getParameter("search").trim();
+        if (searchQuery.isBlank()) {
+            return;
+        }
         try {
             articleList = ArticleDAO.searchNews(searchQuery);
             request.setAttribute("articleList", articleList);
