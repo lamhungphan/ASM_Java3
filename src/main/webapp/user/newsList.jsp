@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-	<div class="container my-4">
+<div class="container my-4">
     <h1 class="mb-4">${category} </h1>
         <c:forEach var="article" items="${articleList}">
-        <div class="row mb-3">
+            <div class="row mb-3">
             <div class="col-md-2">
                 <a href="${pageContext.request.contextPath}/user/detail/${article.id}">
                     <img src="${pageContext.request.contextPath}${article.imagePath}" class="img-fluid rounded" alt="Ảnh"
@@ -21,7 +22,7 @@
             </div>
         </div>
     </c:forEach>
-    
+
     <hr>
 </div>
 

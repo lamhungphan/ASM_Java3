@@ -13,7 +13,6 @@ public class Newsletter {
 		this.enabled = enabled;
 	}
 
-	// Getters and Setters
 	public String getEmail() {
 		return email;
 	}
