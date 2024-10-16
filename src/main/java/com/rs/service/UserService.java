@@ -5,12 +5,13 @@ import com.rs.entity.User;
 import com.rs.util.encrypt.AES;
 import com.rs.util.encrypt.PasswordUtil;
 import com.rs.util.other.XCookie;
+import com.rs.util.other.XFile;
 import com.rs.util.other.XMailer;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
@@ -29,8 +30,9 @@ import java.util.Date;
 import java.util.List;
 
 public class UserService {
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private User user;
     private List<User> list;
 
     public UserService(HttpServletRequest request, HttpServletResponse response) {
@@ -115,39 +117,46 @@ public class UserService {
         request.setAttribute("path", "/admin/userDetail.jsp");
     }
 
-    public void runCrud() throws SQLException, ClassNotFoundException, IOException, InvocationTargetException, IllegalAccessException {
+    public void runCrud() throws SQLException, ClassNotFoundException, IOException, InvocationTargetException, IllegalAccessException, ServletException {
         DateTimeConverter dtc = new DateConverter(new Date());
         dtc.setPattern("MM/dd/yyyy");
         ConvertUtils.register(dtc, Date.class);
-        User user = null;
         String uri = request.getServletPath();
         if (uri.contains("create")) {
-            creatUser(user);
+            creatUser();
         } else if (uri.contains("update")) {
-            updateUser(user);
+            updateUser();
         } else if (uri.contains("delete")) {
-            deleteUser(user);
+            deleteUser();
         } else if (uri.contains("reset")) {
-            resetUser(user);
+            resetUser();
         }
         request.setAttribute("item", user);
     }
 
-    private void creatUser(User user) throws InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
+    private void creatUser() throws InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException, ServletException, IOException {
         user = new User();
+        Part avatar = request.getPart("avatar");
+        XFile.upload(request, avatar);
+        user.setAvatar(avatar.getSubmittedFileName());
         BeanUtils.populate(user, request.getParameterMap());
         UserDAO.addUser(user);
         request.setAttribute("action", "edit");
     }
 
-    private void updateUser(User user) throws SQLException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+    private void updateUser() throws SQLException, InvocationTargetException, IllegalAccessException, ClassNotFoundException, ServletException, IOException {
         user = UserDAO.getUserById(Integer.parseInt(request.getParameter("repId").substring(2)));
+        Part avatar = request.getPart("avatar");
+        if (avatar != null && !avatar.getSubmittedFileName().isBlank()) {
+            XFile.upload(request, avatar);
+            user.setAvatar(avatar.getSubmittedFileName());
+        }
         BeanUtils.populate(user, request.getParameterMap());
         UserDAO.updateUser(user);
         request.setAttribute("action", "edit");
     }
 
-    private void deleteUser(User user) throws SQLException, ClassNotFoundException {
+    private void deleteUser() throws SQLException, ClassNotFoundException {
         UserDAO.deleteUser(Integer.parseInt(request.getParameter("repId").substring(2)));
         user = new User();
         user.setId(UserDAO.generateNewId());
@@ -155,7 +164,7 @@ public class UserService {
         request.setAttribute("action", "create");
     }
 
-    private void resetUser(User user) throws SQLException, ClassNotFoundException {
+    private void resetUser() throws SQLException, ClassNotFoundException {
         user = new User();
         user.setRole(false);
         user.setId(UserDAO.generateNewId());
@@ -309,12 +318,12 @@ public class UserService {
         }
     }
 
-    private String generateConfirmKey() {
+    public String generateConfirmKey() {
         String allowed = "qwertyuiopasdfghjklzxcvbnmMNBVCXZASDFGHJKLPOIUYTREWQ0123456789";
-        String key = "";
+        StringBuilder key = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            key += allowed.charAt((int) (Math.random() * allowed.length()));
+            key.append(allowed.charAt((int) (Math.random() * allowed.length())));
         }
-        return key;
+        return key.toString();
     }
 }

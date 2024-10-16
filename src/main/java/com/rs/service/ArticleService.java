@@ -60,10 +60,10 @@ public class ArticleService {
         viewedIds = xCookie.getValue("viewedArticles").split("C");
 
         for (String id : viewedIds) {
-            if (id != null && !id.isBlank()){
+            if(id!=null && !id.isBlank()){
                 Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
                 viewdList.add(article);
-                if (viewdList.size() == 8) {
+                if (viewdList.size() == 6) {
                     break;
                 }
             }

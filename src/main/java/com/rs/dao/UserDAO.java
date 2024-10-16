@@ -14,7 +14,7 @@ public class UserDAO {
 //    }
 
     public static void addUser(User user) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO USERS (Username, Password, Fullname, Birthday, Gender, Mobile, Email, Role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO USERS (Email, Password, Fullname,Username, Avatar, Birthday, Gender, Mobile,  Role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
 //            stmt.setString(2, password);
@@ -36,12 +36,12 @@ public class UserDAO {
 	}
 
     public static void updateUser(User user) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE USERS SET Email = ?, Password = ?, Fullname = ?, Username = ?, Birthday = ?, Gender = ?, Mobile = ?, Role = ? WHERE Id = ?";
+        String sql = "UPDATE USERS SET Email = ?, Password = ?, Fullname = ?, Username = ?, Avatar = ?, Birthday = ?, Gender = ?, Mobile = ?, Role = ? WHERE Id = ?";
         XJdbc.IUD(sql, user.toUpdateData());
     }
 
     public static void deleteUser(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM USERS WHERE Id = ?";
+        String sql = "UPDATE USERS SET ACTIVE = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
 //            stmt.executeUpdate();
@@ -51,7 +51,6 @@ public class UserDAO {
 
     public static User getUserById(int id) throws SQLException {
     	String sql = "SELECT * FROM USERS WHERE Id=?";
-    	User user = XJdbc.getSingleResult(User.class, sql, id);
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
@@ -59,19 +58,18 @@ public class UserDAO {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-        return user;
+        return XJdbc.getSingleResult(User.class, sql, id);
     }
 
 	public static List<User> getAllUsers() throws SQLException {
-		String sql = "SELECT * FROM USERS";
-		List<User> users = XJdbc.getResultList(User.class, sql);
-//        try (PreparedStatement stmt = connection.prepareStatement(sql);
+		String sql = "SELECT * FROM USERS order by Active desc";
+        //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
 //            while (rs.next()) {
 //                users.add(rs.getString("Fullname"));
 //            }
 //        }
-		return users;
+		return XJdbc.getResultList(User.class, sql);
 	}
 
 	public static User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
@@ -84,8 +82,13 @@ public class UserDAO {
 	}
 	
 	public static int generateNewId() throws ClassNotFoundException, SQLException {
-		String sql = "select top 1 Id from USERS order by Id desc";
+		String sql = "select Id from USERS order by Id desc limit 1";
 		return (int) XJdbc.getValue(sql) +1;
+	}
+
+	public static List<User> getBlacklisted(){
+		String sql = "SELECT * FROM USERS WHERE Active = 0";
+		return XJdbc.getResultList(User.class, sql);
 	}
 
 	public static void main(String[] args) {

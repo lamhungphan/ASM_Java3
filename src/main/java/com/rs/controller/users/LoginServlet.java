@@ -1,16 +1,12 @@
 package com.rs.controller.users;
 
-import com.rs.dao.UserDAO;
-import com.rs.entity.User;
 import com.rs.service.UserService;
 import com.rs.util.other.XCookie;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.rs.util.encrypt.PasswordUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
