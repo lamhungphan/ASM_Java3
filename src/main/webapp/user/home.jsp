@@ -149,17 +149,17 @@
 				<div class="card-header bg-success text-white">5 bản tin bạn
 					đã xem</div>
 				<div class="card-body">
-					<c:forEach var="viewd" items="${viewdList}">
+					<c:forEach var="viewed" items="${viewedList}">
 						<div class="row mb-3">
 							<div class="col-md-2">
-								<a href="${pageContext.request.contextPath}/user/detail/${viewd.id}"> <img
-									src="${pageContext.request.contextPath}${viewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
-									style="max-width: 60%;">
+								<a href="${pageContext.request.contextPath}/user/detail/${viewed.id}"> <img
+										src="${pageContext.request.contextPath}${viewed.imagePath}" class="img-fluid rounded" alt="Ảnh"
+										style="max-width: 60%;">
 								</a>
 							</div>
 							<div class="col-md-10">
 								<h5>
-									<a href="${pageContext.request.contextPath}/user/detail/${viewd.id}">${viewd.title}</a>
+									<a href="${pageContext.request.contextPath}/user/detail/${viewed.id}">${viewed.title}</a>
 								</h5>
 							</div>
 						</div>

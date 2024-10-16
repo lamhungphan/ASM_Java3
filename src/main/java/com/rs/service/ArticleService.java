@@ -11,7 +11,6 @@ import com.rs.util.other.Arguments;
 import com.rs.util.other.XCookie;
 import com.rs.util.other.XFile;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
@@ -30,11 +29,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ArticleService {
 
-    private List<Article> articleList = null;
-    private List<Article> homePageList = null;
-    private List<Article> latestList = null;
-    private List<Article> mostViewdList = null;
-    private List<Article> viewdList = null;
+    private List<Article> articleList;
+    private List<Article> homePageList;
+    private List<Article> latestList;
+    private List<Article> mostViewdList;
+    private List<Article> viewedList ;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -45,7 +44,7 @@ public class ArticleService {
         this.homePageList = new ArrayList<>();
         this.latestList = new ArrayList<>();
         this.mostViewdList = new ArrayList<>();
-        this.viewdList = new ArrayList<>();
+        this.viewedList = new ArrayList<>();
     }
 
     public void homepage() throws SQLException {
@@ -53,18 +52,21 @@ public class ArticleService {
         homePageList = ArticleDAO.getAllHomeNews();
         latestList = ArticleDAO.getLatestNews();
         mostViewdList = ArticleDAO.getTopNewsByViews();
-        viewdList = new ArrayList<>();
+        viewedList = new ArrayList<>();
 
-        String[] viewedIds = null;
         XCookie xCookie = new XCookie(request, response);
-        viewedIds = xCookie.getValue("viewedArticles").split("C");
+        String viewedArticles = xCookie.getValue("viewedArticles");
 
-        for (String id : viewedIds) {
-            if(id!=null && !id.isBlank()){
-                Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
-                viewdList.add(article);
-                if (viewdList.size() == 6) {
-                    break;
+        if(viewedArticles != null && !viewedArticles.isEmpty()){
+            String[] viewedIds = viewedArticles.split("C");
+
+            for (String id : viewedIds) {
+                if(id!=null && !id.isBlank()){
+                    Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
+                    viewedList.add(article);
+                    if (viewedList.size() == 8) {
+                        break;
+                    }
                 }
             }
         }
@@ -74,7 +76,7 @@ public class ArticleService {
         request.setAttribute("latestList", latestList);
         request.setAttribute("mostViewdList", mostViewdList);
         request.setAttribute("view", "/user/home.jsp");
-        request.setAttribute("viewdList", viewdList);
+        request.setAttribute("viewedList", viewedList);
     }
 
     public void listPage() throws SQLException {
@@ -108,14 +110,18 @@ public class ArticleService {
         String id = request.getPathInfo().substring(1);
         Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
         request.setAttribute("article", article);
-        String viewdIds = new XCookie(request, response).getValue("viewArticle");
-        if (viewdIds.contains("null")) {
-            viewdIds = String.valueOf(article.getId());
-        } else if (!viewdIds.contains(article.getId() + "")) {
-            viewdIds = article.getId() + "C" + viewdIds;
+
+        XCookie xCookie = new XCookie(request, response);
+        String viewedIds = xCookie.getValue("viewedArticles");
+
+        if (viewedIds == null || viewedIds.isEmpty()) {
+            viewedIds = String.valueOf(article.getId());
+        } else if (!viewedIds.contains(article.getId() + "")) {
+            viewedIds = article.getId() + "C" + viewedIds;
         }
-        XCookie cookie = new XCookie(request, response);
-        cookie.create("viewArticle", viewdIds, 60 * 60 * 24);
+
+        xCookie.create("viewedArticles", viewedIds, 60 * 60 * 24);
+
         List<Article> relatedNews = ArticleDAO.getRelatedNews(article.getCategoryId(), article.getId());
         request.setAttribute("relatedNewsList", relatedNews);
         request.setAttribute("view", "/user/newsDetail.jsp");
