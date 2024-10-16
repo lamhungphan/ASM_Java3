@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.tags.shaded.org.apache.bcel.generic.RETURN;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -43,6 +44,9 @@ public class HomepageServlet extends HttpServlet {
 			articleService.detailPage();
 		} else if (uri.contains("search") && !request.getParameter("search").isBlank()){
 			articleService.searchEngine();
+			if(request.getParameter("search").isBlank()){
+				return;
+			}
 		} else {
 			articleService.listPage();
 		}
