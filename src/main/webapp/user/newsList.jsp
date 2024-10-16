@@ -18,7 +18,7 @@
         <div class="row mb-3">
             <div class="col-md-2">
                 <a href="${pageContext.request.contextPath}/user/detail/${article.id}">
-                    <img src="${article.imagePath}" class="img-fluid rounded" alt="Ảnh"
+                    <img src="${pageContext.request.contextPath}${article.imagePath}" class="img-fluid rounded" alt="Ảnh"
                          style="max-width: 100%;">
                 </a>
             </div>

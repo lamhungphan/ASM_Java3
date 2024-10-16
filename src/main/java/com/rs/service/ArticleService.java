@@ -134,6 +134,7 @@ public class ArticleService {
             e.printStackTrace();
         }
         request.setAttribute("view", "/user/newsList.jsp");
-
     }
+
+
 }
