@@ -6,7 +6,7 @@
 	<c:url var="root" value="/admin/user" />
 	<c:if test="${sessionScope.currUser.id!=item.id}">
 	<div class="mb-4">
-		<a href="${pageContext.request.contextPath}/admin/user" class="btn btn-secondary">Trở về
+		<a href="${root}/list" class="btn btn-secondary">Trở về
 			danh sách</a>
 	</div>
 	</c:if>

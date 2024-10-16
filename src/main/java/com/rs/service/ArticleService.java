@@ -40,7 +40,7 @@ public class ArticleService {
 
     private static String viewdIds = "";
 
-    public ArticleService(HttpServletResponse response, HttpServletRequest request) throws SQLException {
+    public ArticleService(HttpServletResponse response, HttpServletRequest request) {
         this.response = response;
         this.request = request;
         this.articleList = new ArrayList<>();
@@ -150,42 +150,58 @@ public class ArticleService {
         String uri = request.getServletPath();
         Article article = new Article();
         if (uri.contains("create")) {
-            BeanUtils.populate(article, request.getParameterMap());
-            Part img = request.getPart("img");
+            articleCreate(article);
+        } else if (uri.contains("update")) {
+            articleUpdate(article);
+        } else if (uri.contains("delete")) {
+            articleDelete(article);
+        } else if (uri.contains("reset")) {
+            articleReset(article);
+        }
+    }
+
+    private void articleCreate(Article article) throws ServletException, IOException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
+        BeanUtils.populate(article, request.getParameterMap());
+        Part img = request.getPart("img");
+        XFile.upload(request, img);
+        article.setImage(img.getSubmittedFileName());
+        article.setPostedDate(new Date());
+        article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
+        article.setHome(request.getParameter("onHome")!=null);
+        ArticleDAO.addNews(article);
+        request.setAttribute("article", article);
+        request.setAttribute("action", "edit");
+    }
+
+    private void articleUpdate(Article article) throws ServletException, IOException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
+        BeanUtils.populate(article, request.getParameterMap());
+        Part img = request.getPart("img");
+        if (img != null && !img.getSubmittedFileName().isBlank()) {
             XFile.upload(request, img);
             article.setImage(img.getSubmittedFileName());
-            article.setPostedDate(new Date());
-            article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
-            article.setHome(request.getParameter("onHome")!=null);
-            ArticleDAO.addNews(article);
-            request.setAttribute("article", article);
-            request.setAttribute("action", "edit");
-        } else if (uri.contains("update")) {
-            BeanUtils.populate(article, request.getParameterMap());
-            Part img = request.getPart("img");
-            if (img != null && !img.getSubmittedFileName().isBlank()) {
-                XFile.upload(request, img);
-                article.setImage(img.getSubmittedFileName());
-            }
-            article.setPostedDate(new Date());
-            article.setId(Integer.parseInt(request.getParameter("repId").substring(2)));
-            article.setHome(request.getParameter("onHome")!=null);
-            ArticleDAO.updateNews(article);
-            request.setAttribute("article", article);
-            request.setAttribute("action", "edit");
-        } else if (uri.contains("delete")) {
-            ArticleDAO.deleteNews(Integer.parseInt(request.getParameter("repId").substring(2)));
-            article.setId(ArticleDAO.generateNewId());
-            article.setHome(true);
-            request.setAttribute("article", article);
-            request.setAttribute("action", "edit");
-        } else if (uri.contains("reset")) {
-            article = new Article();
-            article.setId(UserDAO.generateNewId());
-            article.setHome(true);
-            request.setAttribute("article", article);
-            request.setAttribute("action", "create");
         }
+        article.setPostedDate(new Date());
+        article.setId(Integer.parseInt(request.getParameter("repId").substring(2)));
+        article.setHome(request.getParameter("onHome")!=null);
+        ArticleDAO.updateNews(article);
+        request.setAttribute("article", article);
+        request.setAttribute("action", "edit");
+    }
+
+    private void articleDelete(Article article) throws SQLException, ClassNotFoundException {
+        ArticleDAO.deleteNews(Integer.parseInt(request.getParameter("repId").substring(2)));
+        article.setId(ArticleDAO.generateNewId());
+        article.setHome(true);
+        request.setAttribute("article", article);
+        request.setAttribute("action", "edit");
+    }
+
+    private void articleReset(Article article) throws SQLException, ClassNotFoundException {
+        article = new Article();
+        article.setId(UserDAO.generateNewId());
+        article.setHome(true);
+        request.setAttribute("article", article);
+        request.setAttribute("action", "create");
     }
 
     public void searchEngine() throws SQLException {
