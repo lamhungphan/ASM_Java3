@@ -52,20 +52,20 @@ public class NewsCrudServlet extends HttpServlet {
 
 		if(path.contains("search") && !request.getParameter("search").isBlank()) {
             try {
-                new ArticleService( response,request).searchEngine();
+                new ArticleService( request,response).searchEngine();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
 
         } else if(path.contains("edit") || path.contains("blank")) {
             try {
-                new ArticleService(response,request).detailCrud();
+                new ArticleService(request,response).detailCrud();
             } catch (SQLException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else if(path.endsWith("news")) {
 			try {
-				new ArticleService(response,request).listCrud();
+				new ArticleService(request,response).listCrud();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
@@ -79,7 +79,7 @@ public class NewsCrudServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         try {
-            new ArticleService(response,request).articleIUD();
+            new ArticleService(request,response).articleIUD();
         } catch (SQLException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
