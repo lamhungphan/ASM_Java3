@@ -1,8 +1,106 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<style>
+	/* Font và màu sắc chung */
+	body {
+		font-family: 'Arial', sans-serif;
+		color: #333; /* Màu chữ xám đậm */
+	}
 
+	h5, h6, a {
+		font-weight: bold;
+		color: #0056b3; /* Màu xanh đậm */
+	}
 
+	a:hover {
+		color: #dc1d1d; /* Màu xanh tối hơn khi hover */
+		text-decoration: underline;
+	}
+
+	/* Carousel Slider */
+	.carousel-caption h5 {
+		background-color: rgba(0, 0, 0, 0.6); /* Nền đen trong suốt */
+		color: #fff; /* Chữ màu trắng */
+		padding: 10px;
+		border-radius: 3px;
+	}
+
+	.carousel-caption a {
+		color: #fff; /* Link màu trắng */
+	}
+
+	/* Thẻ tin bài */
+	.card-header {
+		background-color: #f8f9fa; /* Màu nền nhạt */
+		color: #333; /* Màu chữ đậm */
+		border-bottom: 1px solid #ddd;
+	}
+
+	.card-body {
+		padding: 10px;
+	}
+
+	/* Ảnh bài viết */
+	.img-fluid {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		margin-bottom: 10px;
+	}
+
+	/* Đoạn tóm tắt bài viết */
+	.text-muted {
+		font-size: 0.9rem;
+		color: #777; /* Màu xám nhạt */
+	}
+
+	/* Danh sách bài viết nổi bật */
+	ul.list-group li {
+		border-bottom: 1px solid #ddd;
+		padding: 10px;
+	}
+
+	ul.list-group li a {
+		font-size: 0.95rem;
+		font-weight: bold;
+	}
+
+	/* Nút đăng ký nhận tin */
+	form input[type="email"] {
+		border: 1px solid #ccc;
+		padding: 8px;
+	}
+
+	form button {
+		background-color: #0056b3;
+		color: #fff;
+	}
+
+	form button:hover {
+		background-color: #003d7a;
+	}
+
+	/* Các bản tin đã xem */
+	.row.mb-3 {
+		border-bottom: 1px solid #eee;
+		padding-bottom: 10px;
+		margin-bottom: 10px;
+	}
+
+	h5 a {
+		font-size: 1.1rem;
+	}
+
+	h5 a:hover {
+		color: #0056b3;
+		text-decoration: underline;
+	}
+
+	small.text-muted {
+		font-size: 0.85rem;
+	}
+
+</style>
 <div class="container my-4">
 	<div class="row">
 		<!-- Carousel Slider -->
@@ -10,6 +108,13 @@
 			<div class="border bg-white p-5">
 				<div id="articleSlider" class="carousel slide"
 					data-bs-ride="carousel">
+					<!-- Indicators -->
+					<ol class="carousel-indicators">
+						<c:forEach var="slider" items="${homePageList}" varStatus="status">
+							<li data-bs-target="#articleSlider" data-bs-slide-to="${status.index}" class="${status.index == 0 ? 'active' : ''}"></li>
+						</c:forEach>
+					</ol>
+
 					<div class="carousel-inner">
 						<c:forEach var="slider" items="${homePageList}" varStatus="status">
 							<div class="carousel-item ${status.index == 0 ? 'active' : ''}">
