@@ -2,8 +2,11 @@ package com.rs.service;
 
 import com.rs.dao.UserDAO;
 import com.rs.entity.User;
+import com.rs.util.encrypt.AES;
 import com.rs.util.encrypt.PasswordUtil;
 import com.rs.util.other.XCookie;
+import com.rs.util.other.XMailer;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,8 +16,13 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -152,5 +160,161 @@ public class UserService {
         user.setRole(false);
         user.setId(UserDAO.generateNewId());
         request.setAttribute("action", "create");
+    }
+
+    public void changePass() throws SQLException, ClassNotFoundException {
+        String currPass = request.getParameter("currPass");
+        String newPass = request.getParameter("newPass");
+        String confirmPass = request.getParameter("confirmPass");
+        User currUser = (User) request.getSession().getAttribute("currUser");
+        if (!PasswordUtil.checkPassword(currPass, currUser.getPassword())) {
+            request.setAttribute("error", "Mật khẩu hiện tại không khớp");
+            request.setAttribute("view", "/user/changePass.jsp");
+        } else if (!newPass.equals(confirmPass)) {
+            request.setAttribute("error", "Mật khẩu xác nhận không khớp");
+            request.setAttribute("view", "/user/changePass.jsp");
+        } else {
+            currUser.setPassword(PasswordUtil.hashPassword(newPass));
+            UserDAO.updateUser(currUser);
+            request.getSession().setAttribute("currUser", null);
+            request.setAttribute("view", "/user/login.jsp");
+        }
+    }
+
+    public void forgetPass() throws SQLException, ClassNotFoundException, IOException, ServletException {
+        String key;
+        boolean isConfirm = (boolean) request.getSession().getAttribute("isConfirm");
+        if (isConfirm) {
+            String newPass = request.getParameter("newPassword");
+            String confirmPass = request.getParameter("confirmPassword");
+            if (newPass.equals(confirmPass)) {
+                User temp = UserDAO.getUserById((int) request.getSession().getAttribute("passChangeId"));
+                temp.setPassword(PasswordUtil.hashPassword(newPass));
+                UserDAO.updateUser(temp);
+                request.getSession().setAttribute("currUser", null);
+                response.sendRedirect(request.getContextPath() + "/user/login");
+            } else {
+                request.setAttribute("error", "Mật khẩu không khớp");
+                request.setAttribute("view", "/user/forgetPass.jsp");
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
+        } else {
+            String email = request.getParameter("email");
+            User temp = UserDAO.getUserByEmail(email);
+            if (temp != null) {
+                key = generateConfirmKey();
+                try {
+                    XMailer.send(email, "Mã xác nhận", key);
+                    request.getSession().setAttribute("confirmKey", key);
+                    request.getSession().setAttribute("passChangeId", temp.getId());
+                    request.setAttribute("formAction", "/forgetPass/confirm");
+                    request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
+                } catch (MessagingException e) {
+                    request.setAttribute("error", "Có lỗi xảy ra");
+                    request.setAttribute("view", "/user/forgetPass.jsp");
+                    request.getRequestDispatcher("/index.jsp").forward(request, response);
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public void confirmEmail() throws IOException, ServletException {
+        String inputKey = request.getParameter("confirm");
+        String confirmKey = (String) request.getSession().getAttribute("confirmKey");
+        if (inputKey.equals(confirmKey)) {
+            request.getSession().setAttribute("confirmKey", null);
+            request.getSession().setAttribute("isConfirm", true);
+            response.sendRedirect(request.getContextPath() + "/user/forgetPass");
+        } else {
+            request.setAttribute("errorMess", "Mã xác nhận không hợp lệ");
+            request.setAttribute("formAction", "/forgetPass/confirm");
+            request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
+        }
+    }
+
+    public void register() throws ServletException, IOException, SQLException, ClassNotFoundException {
+        // Lấy thông tin từ form đăng ký
+        String path = request.getServletPath();
+        if (path.endsWith("confirm")) {
+            confirmRegister();
+        } else {
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String confirmPassword = request.getParameter("confirmPassword");
+            if (email != null && password != null) {
+                User existingUser = UserDAO.getUserByEmail(email);
+                if (existingUser != null) {
+                    request.setAttribute("error", "Email đã tồn tại, vui lòng sử dụng email khác");
+                    request.setAttribute("view", "/user/register.jsp");
+                } else if (!password.equals(confirmPassword)) {
+                    request.setAttribute("error", "Mật khẩu và mật khẩu xác nhận không khớp");
+                    request.setAttribute("view", "/user/register.jsp");
+                } else {
+                    // Gửi mail cùng mã xác nhận
+                    String confirmKey = generateConfirmKey();
+                    try {
+                        XMailer.send(email, "Mã xác nhận", confirmKey);
+                        String AES_KEY = AES.generateSecretKey();
+                        request.getSession().setAttribute("confirmKey", confirmKey);
+                        request.getSession().setAttribute("regEmail", AES.encryptPassword(email, AES_KEY));
+                        request.getSession().setAttribute("AES_KEY", AES_KEY);
+                        request.getSession().setAttribute("regPassword", PasswordUtil.hashPassword(password));
+                        request.setAttribute("formAction", "/register/confirm");
+                        request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
+                        return;
+                    } catch (MessagingException | NoSuchAlgorithmException | NoSuchPaddingException |
+                             InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+                        request.setAttribute("error", "Có lỗi khi gửi mail");
+                        request.setAttribute("view", "/user/register.jsp");
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                request.setAttribute("error", "Vui lòng điền đầy đủ thông tin");
+                request.setAttribute("view", "/user/register.jsp");
+            }
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
+    }
+
+    public void confirmRegister() throws IOException, ServletException {
+        String confirmKeyInput = request.getParameter("confirm");
+        String confirmKey = (String) request.getSession().getAttribute("confirmKey");
+        String AES_KEY = (String) request.getSession().getAttribute("AES_KEY");
+        if (confirmKeyInput.equals(confirmKey)) {
+            // Mã hóa mật khẩu với SHA-256
+            String regPassword = (String) request.getSession().getAttribute("regPassword");
+            String regEmail;
+            try {
+                regEmail = AES.decryptPassword((String) request.getSession().getAttribute("regEmail"), AES_KEY);
+                // Lưu thông tin người dùng vào cơ sở dữ liệu
+                UserDAO.addUser(regEmail, regPassword, false);
+            } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
+                     | IllegalBlockSizeException | BadPaddingException | ClassNotFoundException | SQLException e) {
+                // TODO Auto-generated catch block
+                throw new ServletException(e);
+            } finally {
+                request.getSession().setAttribute("confirmKey", null);
+                request.getSession().setAttribute("regEmail", null);
+                request.getSession().setAttribute("regPassword", null);
+                request.getSession().setAttribute("AES_KEY", null);
+            }
+
+            // Điều hướng đến trang đăng nhập thành công
+            response.sendRedirect("/SOF203_Assignment/user/login");
+        } else {
+            request.setAttribute("errorMess", "Mã xác nhận sai, hãy nhập lại");
+            request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
+        }
+    }
+
+    private String generateConfirmKey() {
+        String allowed = "qwertyuiopasdfghjklzxcvbnmMNBVCXZASDFGHJKLPOIUYTREWQ0123456789";
+        String key = "";
+        for (int i = 0; i < 6; i++) {
+            key += allowed.charAt((int) (Math.random() * allowed.length()));
+        }
+        return key;
     }
 }

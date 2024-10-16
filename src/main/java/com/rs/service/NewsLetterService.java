@@ -24,7 +24,7 @@ public class NewsLetterService {
         list = new ArrayList<Newsletter>();
     }
 
-    public void runCrud() throws SQLException, ClassNotFoundException {
+    public void runCrud() throws SQLException, ClassNotFoundException, ServletException, IOException {
         String path = request.getServletPath();
         Newsletter form;
         list = NewsLetterDAO.getAllNewsletter();
@@ -44,6 +44,8 @@ public class NewsLetterService {
             form = new Newsletter();
             request.setAttribute("item", form);
         }
+        request.setAttribute("path", "/admin/letter.jsp");
+        request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
     }
 
     public void subscribe() throws IOException, ServletException, SQLException, ClassNotFoundException {

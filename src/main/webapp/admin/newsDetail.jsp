@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:url value="/admin/article" var="url"/>
+<c:url value="/admin" var="url"/>
 <div class="container">
     <h1 class="mt-4">Tin tức</h1>
     <h2>Tác giả: ${article.authorName}</h2>
     <h2>Ngày đăng: ${article.postedDate}</h2>
 
-    <form action="${url}" method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label for="repId" class="form-label">Id</label> <input
@@ -56,23 +56,23 @@
         <label>Cho phép lên trang chủ?</label><br>
         <c:if test="${sessionScope.currUser.role=='false'}">
             <div class="text-center">
-                <button formaction="${url}/create" ${action=='edit'?'hidden':''}
+                <button formaction="${url}/news/create" ${action=='edit'?'hidden':''}
                         class="btn btn-success">Tạo
                 </button>
-                <button formaction="${url}/update" ${action=='create'?'hidden':''}
+                <button formaction="${url}/news/update" ${action=='create'?'hidden':''}
                         class="btn btn-warning">Sửa
                 </button>
-                <button formaction="${url}/delete" ${action=='create'?'hidden':''}
+                <button formaction="${url}/news/delete" ${action=='create'?'hidden':''}
                         class="btn btn-danger">Xóa
                 </button>
-                <button formaction="${url}/reset" class="btn btn-secondary">Làm
+                <button formaction="${url}/news/reset" class="btn btn-secondary">Làm
                     mới
                 </button>
             </div>
         </c:if>
         <c:if test="${sessionScope.currUser.role=='true'}">
-            <button formaction="${url}/update" class="btn btn-warning">Sửa</button>
-            <button formaction="${url}/delete" class="btn btn-danger">Xóa</button>
+            <button formaction="${url}/news/update" class="btn btn-warning">Sửa</button>
+            <button formaction="${url}/news/delete" class="btn btn-danger">Xóa</button>
             <br>
         </c:if>
     </form>

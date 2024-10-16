@@ -40,8 +40,6 @@ public class NewsLetterServlet extends HttpServlet {
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        request.setAttribute("path", "/admin/letter.jsp");
-		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 
 }
