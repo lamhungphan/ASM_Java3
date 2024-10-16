@@ -28,7 +28,6 @@ public class HomepageServlet extends HttpServlet {
 
     public HomepageServlet() {
         super();
-
     }
 
     @Override
@@ -44,7 +43,7 @@ public class HomepageServlet extends HttpServlet {
                 articleService.detailPage();
             } else if (uri.contains("search") && !request.getParameter("search").isBlank()) {
                 articleService.searchEngine();
-            } else if (request.getParameter("search").isBlank()) {
+            } else if (request.getParameter("search") != null && request.getParameter("search").isBlank() ) {
                 articleService.homepage();
             } else {
                 articleService.listPage();

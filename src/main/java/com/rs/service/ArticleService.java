@@ -53,17 +53,19 @@ public class ArticleService {
         homePageList = ArticleDAO.getAllHomeNews();
         latestList = ArticleDAO.getLatestNews();
         mostViewdList = ArticleDAO.getTopNewsByViews();
-
         viewdList = new ArrayList<>();
+
         String[] viewedIds = null;
         XCookie xCookie = new XCookie(request, response);
         viewedIds = xCookie.getValue("viewedArticles").split("C");
 
         for (String id : viewedIds) {
-            Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
-            viewdList.add(article);
-            if (viewdList.size() == 6) {
-                break;
+            if (id != null && !id.isBlank()){
+                Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
+                viewdList.add(article);
+                if (viewdList.size() == 8) {
+                    break;
+                }
             }
         }
 
