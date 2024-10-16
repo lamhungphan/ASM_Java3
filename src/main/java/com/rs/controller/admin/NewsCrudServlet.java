@@ -7,6 +7,7 @@ import com.rs.dao.UserDAO;
 import com.rs.entity.Article;
 import com.rs.entity.Category;
 import com.rs.entity.User;
+import com.rs.service.ArticleService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -48,78 +49,26 @@ public class NewsCrudServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		List<Article> list;
 		String path = request.getServletPath();
-		User user = (User) request.getSession().getAttribute("currUser");
-		if(path.contains("search") && !request.getParameter("search").isBlank()) {
-			if(user.getRole()) {
-				try {
-					list = ArticleDAO.searchNews(request.getParameter("search"));
-					request.setAttribute("list", list);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					list = ArticleDAO.searchNewsByAuthor(user.getId(),request.getParameter("search"));
-					request.setAttribute("list", list);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			request.setAttribute("path", "/admin/newsList.jsp");
 
-		} else if(path.contains("edit")) {
-			String id = request.getPathInfo().substring(1);
+		if(path.contains("search") && !request.getParameter("search").isBlank()) {
+            try {
+                new ArticleService( response,request).searchEngine();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else if(path.contains("edit") || path.contains("blank")) {
+            try {
+                new ArticleService(response,request).detailCrud();
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else if(path.endsWith("news")) {
 			try {
-				article = ArticleDAO.getNewsById(Integer.parseInt(id));
-			} catch (NumberFormatException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			request.setAttribute("news", article);
-			List<Category> categories;
-			try {
-				categories = CategoryDAO.getAllCategories();
-				request.setAttribute("categories", categories);
+				new ArticleService(response,request).listCrud();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
-			request.setAttribute("path", "/admin/newsDetail.jsp");
-		}
-		else if(path.contains("blank")) {
-			article = new Article();
-			try {
-				article.setId(ArticleDAO.generateNewId());
-			} catch (ClassNotFoundException | SQLException e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("news", article);
-			List<Category> categories;
-			try {
-				categories = CategoryDAO.getAllCategories();
-				request.setAttribute("categories", categories);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("path", "/admin/newsDetail.jsp");
-		}
-		else if(user.getRole()) {
-			try {
-				list = ArticleDAO.getAllNews();
-				request.setAttribute("list", list);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("path", "/admin/newsList.jsp");
-		}
-		else if(!user.getRole()) {
-			try {
-				list = ArticleDAO.getAllNewsByAuthor(user.getId());
-				request.setAttribute("list", list);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("path", "/admin/newsList.jsp");
 		}
 		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
@@ -129,75 +78,10 @@ public class NewsCrudServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		DateTimeConverter dtc = new DateConverter(new Date());
-		dtc.setPattern("MM/dd/yyyy");
-		ConvertUtils.register(dtc, Date.class);
-		String uri = request.getServletPath();
 
-		if (uri.contains("create")) {
-			try {
-				BeanUtils.populate(article, request.getParameterMap());
-				Part img = request.getPart("img");
-				upload(request, img);
-				article.setImage(img.getSubmittedFileName());
-				article.setPostedDate(new Date());
-				article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
-				ArticleDAO.addNews(article);
-				request.setAttribute("article", article);
-				request.setAttribute("action", "edit");
-			} catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else if (uri.contains("update")) {
-			try {
-				BeanUtils.populate(article, request.getParameterMap());
-				Part img = request.getPart("img");
-				if(img!=null && !img.getSubmittedFileName().isBlank()) {
-					upload(request, img);
-					article.setImage(img.getSubmittedFileName());
-				}
-				article.setPostedDate(new Date());
-				ArticleDAO.updateNews(article);
-				request.setAttribute("article", article);
-				request.setAttribute("action", "edit");
-			} catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else if (uri.contains("delete")) {
-			try {
-				ArticleDAO.deleteNews(article.getId());
-				article = new Article();
-				article.setId(ArticleDAO.generateNewId());
-				request.setAttribute("article", article);
-				request.setAttribute("action", "edit");
-			} catch (ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else if (uri.contains("reset")) {
-			article = new Article();
-			try {
-				article.setId(UserDAO.generateNewId());
-			} catch (ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			request.setAttribute("article", article);
-			request.setAttribute("action", "create");
-		}
 		request.setAttribute("path", "/admin/newsDetail.jsp");
 		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 	
-	private void upload(HttpServletRequest request, Part img) throws IOException {
-		File saveDir = new File(request.getServletContext().getRealPath("/photo"));
-		if(!saveDir.exists()) {
-			saveDir.mkdirs();
-		}
-		String path = "/photo/" + img.getSubmittedFileName();
-		String fileName = request.getServletContext().getRealPath(path);
-		img.write(fileName);
-	}
+
 }
