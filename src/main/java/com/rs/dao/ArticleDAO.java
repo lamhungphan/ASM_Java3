@@ -49,11 +49,16 @@ public class ArticleDAO {
 	}
 
 	public static void deleteNews(int id) throws SQLException, ClassNotFoundException {
-		String sql = "DELETE FROM NEWS WHERE Id = ?";
+		String sql = "UPDATE NEWS SET Home = 0, Active = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
 //            stmt.executeUpdate();
 //        }
+		XJdbc.IUD(sql, id);
+	}
+
+	public static void noWayHome(int id) throws SQLException, ClassNotFoundException {
+		String sql = "UPDATE NEWS SET Home = 0 WHERE Id = ?";
 		XJdbc.IUD(sql, id);
 	}
 
@@ -70,7 +75,7 @@ public class ArticleDAO {
 	}
 
 	public static List<Article> getAllNews() throws SQLException {
-		String sql = "SELECT * FROM NEWS";
+		String sql = "SELECT * FROM NEWS order by Active desc";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {

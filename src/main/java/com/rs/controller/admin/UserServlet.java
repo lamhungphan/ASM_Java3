@@ -1,23 +1,15 @@
 package com.rs.controller.admin;
 
-import com.rs.dao.UserDAO;
-import com.rs.entity.User;
 import com.rs.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.commons.beanutils.converters.DateTimeConverter;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Servlet implementation class UserServlet
@@ -54,7 +46,11 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-
+        try {
+            new UserService(request, response).runCrud();
+        } catch (SQLException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         request.setAttribute("path", "/admin/userDetail.jsp");
         request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
     }

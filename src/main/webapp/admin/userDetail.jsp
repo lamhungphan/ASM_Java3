@@ -14,6 +14,15 @@
 		<h2 class="text-center mb-4">Thông Tin Người Dùng</h2>
 		<form method="post">
 			<div class="mb-3">
+				<label class="form-label">Hình ảnh</label>
+				<div>
+					<img alt="${item.avatar}" src="${pageContext.request.contextPath}${item.avatarPath}"
+						 class="img-fluid mb-2" id="preview"> <br> <input
+						type="file" name="avatar" id="file" accept="image/*"
+						onchange="previewImage(event)" ${sessionScope.currUser.role==true?'hidden':''}> <br>
+				</div>
+			</div>
+			<div class="mb-3">
 				<label for="id" class="form-label">Id:</label> <input id="id"
 					name="repId" value="${item.repId}" readonly class="form-control">
 			</div>
@@ -77,3 +86,18 @@
 		</form>
 	</div>
 </div>
+<script>
+	function previewImage(event) {
+		const preview = document.getElementById('preview');
+		const file = event.target.files[0];
+		const reader = new FileReader();
+
+		reader.onload = function () {
+			preview.src = reader.result;
+		}
+
+		if (file) {
+			reader.readAsDataURL(file);
+		}
+	}
+</script>

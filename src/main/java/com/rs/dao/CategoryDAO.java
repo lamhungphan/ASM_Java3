@@ -34,7 +34,7 @@ public class CategoryDAO {
     }
 
     public static void deleteCategory(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM CATEGORIES WHERE Id = ?";
+        String sql = "UPDATE CATEGORIES SET Active = 0 WHERE Id = ?";
 //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 //            stmt.setString(1, id);
 //            stmt.executeUpdate();
@@ -42,28 +42,26 @@ public class CategoryDAO {
         XJdbc.IUD(sql, id);
     }
     
-    public static Category getCategoryById(int id) throws SQLException {
-    	String sql = "SELECT * FROM CATEGORIES WHERE Id=?";
-    	Category cate = XJdbc.getSingleResult(Category.class, sql, id);
-        
+    public static Category getCategoryById(int id) {
+    	String sql = "SELECT * FROM CATEGORIES WHERE Id=? and Active=1";
+
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
 //            while (rs.next()) {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-        return cate;
+        return XJdbc.getSingleResult(Category.class, sql, id);
     }
 
-    public static List<Category> getAllCategories() throws SQLException {
-    	String sql = "SELECT * FROM CATEGORIES";
-        List<Category> categories = XJdbc.getResultList(Category.class, sql);
-//        try (PreparedStatement stmt = connection.prepareStatement(sql);
+    public static List<Category> getAllCategories() {
+    	String sql = "SELECT * FROM CATEGORIES order by Active desc";
+        //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
 //            while (rs.next()) {
 //                categories.add(rs.getString("Name"));
 //            }
 //        }
-        return categories;
+        return XJdbc.getResultList(Category.class, sql);
     }
 }

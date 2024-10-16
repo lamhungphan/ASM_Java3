@@ -1,23 +1,13 @@
 package com.rs.controller.users;
 
-import com.rs.dao.UserDAO;
-import com.rs.entity.User;
-import jakarta.mail.MessagingException;
+import com.rs.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.rs.util.encrypt.AES;
-import com.rs.util.encrypt.PasswordUtil;
-import com.rs.util.other.XMailer;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
@@ -26,7 +16,6 @@ import java.sql.SQLException;
 @WebServlet({ "/user/register", "/user/register/confirm" })
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String AES_KEY;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -53,16 +42,10 @@ public class RegisterServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-	}
-
-	private String generateConfirmKey() {
-		String allowed = "qwertyuiopasdfghjklzxcvbnmMNBVCXZASDFGHJKLPOIUYTREWQ0123456789";
-		String key = "";
-		for (int i = 0; i < 6; i++) {
-			key += allowed.charAt((int) (Math.random() * allowed.length()));
-		}
-		return key;
-
-	}
+        try {
+            new UserService(request, response).register();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
