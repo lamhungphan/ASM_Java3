@@ -119,8 +119,4 @@ public class NewsLetterService {
         }
         return key.toString();
     }
-
-    public void sendConfirmationEmail(String email, String key) throws MessagingException {
-        return XMailer.send(email, "Mã xác nhận", key);
-    }
 }
