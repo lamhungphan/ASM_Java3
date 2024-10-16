@@ -149,17 +149,17 @@
 				<div class="card-header bg-success text-white">5 bản tin bạn
 					đã xem</div>
 				<div class="card-body">
-					<c:forEach var="viewd" items="${viewdList}">
+					<c:forEach var="viewed" items="${viewedList}">
 						<div class="row mb-3">
 							<div class="col-md-2">
-								<a href="${pageContext.request.contextPath}/user/detail/${viewd.id}"> <img
-									src="${pageContext.request.contextPath}${viewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
-									style="max-width: 60%;">
+								<a href="${pageContext.request.contextPath}/user/detail/${viewed.id}"> <img
+										src="${pageContext.request.contextPath}${viewed.imagePath}" class="img-fluid rounded" alt="Ảnh"
+										style="max-width: 60%;">
 								</a>
 							</div>
 							<div class="col-md-10">
 								<h5>
-									<a href="${pageContext.request.contextPath}/user/detail/${viewd.id}">${viewd.title}</a>
+									<a href="${pageContext.request.contextPath}/user/detail/${viewed.id}">${viewed.title}</a>
 								</h5>
 							</div>
 						</div>
@@ -194,26 +194,22 @@
 
 			<!-- Newsletter Subscription -->
 			<div class="card mb-3">
-				<div class="card-header bg-secondary text-white">Đăng ký nhận
-					tin</div>
+				<div class="card-header bg-secondary text-white">Đăng ký nhận tin</div>
 				<div class="card-body">
 					<form action="${pageContext.request.contextPath}/letter/subscribe" method="post"
 						class="d-flex">
 						<input name="email" type="email"
 							class="form-control form-control-sm me-2"
 							placeholder="newsletter@example.com">
-						<div>
-							<span class="text-red">${errorMess}</span>>
-							<span class="text-green">${message}</span>>
+						<div >
+							<span class="text-red">${errorMess}</span>
+							<span class="text-green">${message}</span>
 						</div>
-
 						<button class="btn btn-primary btn-sm" type="submit">
 							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
 								fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
-							  <path
-									d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5z" />
-							  <path
-									d="M2 3h10v2H2zm0 3h4v3H2zm0 4h4v1H2zm0 2h4v1H2zm5-6h2v1H7zm3 0h2v1h-2zM7 8h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2z" />
+							  <path ="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5z" />
+							  <path d="M2 3h10v2H2zm0 3h4v3H2zm0 4h4v1H2zm0 2h4v1H2zm5-6h2v1H7zm3 0h2v1h-2zM7 8h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2z" />
 							</svg>
 						</button>
 					</form>
@@ -230,27 +226,27 @@
 			<div class="card-header bg-warning text-white">5 bản tin được
 				xem nhiều</div>
 			<div class="card-body">
-				<c:forEach var="mostViewd" items="${mostViewdList}">
+				<c:forEach var="mostViewed" items="${mostViewedList}">
 					<div class="row mb-3">
 						<div class="col-md-2">
-							<a href="${pageContext.request.contextPath}/user/detail/${mostViewd.id}"> <img
-								src="${pageContext.request.contextPath}${mostViewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
+							<a href="${pageContext.request.contextPath}/user/detail/${mostViewed.id}"> <img
+								src="${pageContext.request.contextPath}${mostViewed.imagePath}" class="img-fluid rounded" alt="Ảnh"
 								style="max-width: 100%;">
 							</a>
 						</div>
 						<div class="col-md-10">
 							<h5>
-								<a href="${pageContext.request.contextPath}/user/detail/${mostViewd.id}"
-									style="text-decoration: none;">${mostViewd.title}</a>
+								<a href="${pageContext.request.contextPath}/user/detail/${mostViewed.id}"
+									style="text-decoration: none;">${mostViewed.title}</a>
 							</h5>
-							<p class="text-muted">${mostViewd.excerpt}</p>
+							<p class="text-muted">${mostViewed.excerpt}</p>
 							<small class="text-muted"> <svg
 									xmlns="http://www.w3.org/2000/svg" width="20" height="20"
 									fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 15 20">
 									  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
 									  <path
 										d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-									</svg> ${mostViewd.viewCount}
+									</svg> ${mostViewed.viewCount}
 							</small>
 						</div>
 					</div>

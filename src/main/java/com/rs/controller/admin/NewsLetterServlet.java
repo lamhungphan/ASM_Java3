@@ -1,5 +1,6 @@
 package com.rs.controller.admin;
 
+import com.rs.dao.NewsLetterDAO;
 import com.rs.entity.Newsletter;
 import com.rs.service.NewsLetterService;
 import jakarta.servlet.ServletException;
@@ -7,9 +8,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.rs.util.other.XMailer;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Servlet implementation class NewsLetterServlet
