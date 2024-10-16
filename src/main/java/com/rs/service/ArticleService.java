@@ -32,10 +32,10 @@ public class ArticleService {
     private List<Article> articleList;
     private List<Article> homePageList;
     private List<Article> latestList;
-    private List<Article> mostViewdList;
-    private List<Article> viewedList ;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private List<Article> mostViewedList;
+    private List<Article> viewedList;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
     public ArticleService(HttpServletRequest request, HttpServletResponse response) {
         this.response = response;
@@ -43,7 +43,7 @@ public class ArticleService {
         this.articleList = new ArrayList<>();
         this.homePageList = new ArrayList<>();
         this.latestList = new ArrayList<>();
-        this.mostViewdList = new ArrayList<>();
+        this.mostViewedList = new ArrayList<>();
         this.viewedList = new ArrayList<>();
     }
 
@@ -51,22 +51,20 @@ public class ArticleService {
         articleList = ArticleDAO.getAllHomeNews();
         homePageList = ArticleDAO.getAllHomeNews();
         latestList = ArticleDAO.getLatestNews();
-        mostViewdList = ArticleDAO.getTopNewsByViews();
+        mostViewedList = ArticleDAO.getTopNewsByViews();
         viewedList = new ArrayList<>();
 
+        viewedList = new ArrayList<>();
+        String[] viewedIds;
         XCookie xCookie = new XCookie(request, response);
-        String viewedArticles = xCookie.getValue("viewedArticles");
+        viewedIds = xCookie.getValue("viewedArticles").split("C");
 
-        if(viewedArticles != null && !viewedArticles.isEmpty()){
-            String[] viewedIds = viewedArticles.split("C");
-
-            for (String id : viewedIds) {
-                if(id!=null && !id.isBlank()){
-                    Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
-                    viewedList.add(article);
-                    if (viewedList.size() == 8) {
-                        break;
-                    }
+        for (String id : viewedIds) {
+            if(id!=null && !id.isBlank()){
+                Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
+                viewedList.add(article);
+                if (viewedList.size() == 6) {
+                    break;
                 }
             }
         }
@@ -74,9 +72,9 @@ public class ArticleService {
         request.setAttribute("newsList", articleList);
         request.setAttribute("homePageList", homePageList);
         request.setAttribute("latestList", latestList);
-        request.setAttribute("mostViewdList", mostViewdList);
-        request.setAttribute("view", "/user/home.jsp");
+        request.setAttribute("mostViewedList", mostViewedList);
         request.setAttribute("viewedList", viewedList);
+        request.setAttribute("view", "/user/home.jsp");
     }
 
     public void listPage() throws SQLException {
@@ -164,10 +162,12 @@ public class ArticleService {
     private void articleCreate(Article article) throws ServletException, IOException, InvocationTargetException, IllegalAccessException, SQLException, ClassNotFoundException {
         BeanUtils.populate(article, request.getParameterMap());
         Part img = request.getPart("img");
-        XFile.upload(request, img);
-        article.setImage(img.getSubmittedFileName());
+        if (img != null && !img.getSubmittedFileName().isBlank()) {
+            XFile.upload(request, img);
+            article.setImage(img.getSubmittedFileName());
+        }
         article.setPostedDate(new Date());
-        article.setAuthor(((Article) request.getSession().getAttribute("user")).getId());
+        article.setAuthor(((Article) request.getSession().getAttribute("currUser")).getId());
         article.setHome(request.getParameter("onHome") != null);
         ArticleDAO.addNews(article);
         request.setAttribute("article", article);

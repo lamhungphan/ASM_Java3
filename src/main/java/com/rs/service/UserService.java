@@ -311,7 +311,7 @@ public class UserService {
             }
 
             // Điều hướng đến trang đăng nhập thành công
-            response.sendRedirect("/SOF203_Assignment/user/login");
+            response.sendRedirect(request.getContextPath() + "/user/login");
         } else {
             request.setAttribute("errorMess", "Mã xác nhận sai, hãy nhập lại");
             request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);

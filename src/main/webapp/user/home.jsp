@@ -226,27 +226,27 @@
 			<div class="card-header bg-warning text-white">5 bản tin được
 				xem nhiều</div>
 			<div class="card-body">
-				<c:forEach var="mostViewd" items="${mostViewdList}">
+				<c:forEach var="mostViewed" items="${mostViewedList}">
 					<div class="row mb-3">
 						<div class="col-md-2">
-							<a href="${pageContext.request.contextPath}/user/detail/${mostViewd.id}"> <img
-								src="${pageContext.request.contextPath}${mostViewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
+							<a href="${pageContext.request.contextPath}/user/detail/${mostViewed.id}"> <img
+								src="${pageContext.request.contextPath}${mostViewed.imagePath}" class="img-fluid rounded" alt="Ảnh"
 								style="max-width: 100%;">
 							</a>
 						</div>
 						<div class="col-md-10">
 							<h5>
-								<a href="${pageContext.request.contextPath}/user/detail/${mostViewd.id}"
-									style="text-decoration: none;">${mostViewd.title}</a>
+								<a href="${pageContext.request.contextPath}/user/detail/${mostViewed.id}"
+									style="text-decoration: none;">${mostViewed.title}</a>
 							</h5>
-							<p class="text-muted">${mostViewd.excerpt}</p>
+							<p class="text-muted">${mostViewed.excerpt}</p>
 							<small class="text-muted"> <svg
 									xmlns="http://www.w3.org/2000/svg" width="20" height="20"
 									fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 15 20">
 									  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
 									  <path
 										d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-									</svg> ${mostViewd.viewCount}
+									</svg> ${mostViewed.viewCount}
 							</small>
 						</div>
 					</div>

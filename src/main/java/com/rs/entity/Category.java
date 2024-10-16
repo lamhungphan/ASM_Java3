@@ -1,7 +1,7 @@
 package com.rs.entity;
 
 public class Category {
-	private int id;
+	private long id;
 	private String name;
 	private boolean active;
 
@@ -9,17 +9,17 @@ public class Category {
 		super();
 	}
 
-	public Category(int id, String name, boolean active) {
+	public Category(long id, String name, boolean active) {
 		this.id = id;
 		this.name = name;
         this.active = active;
     }
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

@@ -12,14 +12,14 @@
 	</c:if>
 	<div class="card p-4">
 		<h2 class="text-center mb-4">Thông Tin Người Dùng</h2>
-		<form method="post">
+		<form method="post" enctype="multipart/form-data">
 			<div class="mb-3">
 				<label class="form-label">Hình ảnh</label>
 				<div>
 					<img alt="${item.avatar}" src="${pageContext.request.contextPath}${item.avatarPath}"
-						 class="img-fluid mb-2" id="preview"> <br> <input
+						 class="img-fluid mb-2" id="preview" width="200px" height="300px"> <br> <input
 						type="file" name="avatar" id="file" accept="image/*"
-						onchange="previewImage(event)" ${sessionScope.currUser.role==true?'hidden':''}> <br>
+						onchange="previewImage(event)" ${sessionScope.currUser.id==item.id?'':'hidden'}> <br>
 				</div>
 			</div>
 			<div class="mb-3">

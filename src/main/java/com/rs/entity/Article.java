@@ -8,14 +8,14 @@ import java.sql.SQLException;
 import java.util.Date;
 
 public class Article {
-	private int id;
+	private long id;
 	private String title;
 	private String content;
 	private String image;
 	private Date postedDate;
-	private int author;
+	private long author;
 	private int viewCount;
-	private int categoryId;
+	private long categoryId;
 	private boolean home;
 	private boolean active;
 
@@ -23,8 +23,8 @@ public class Article {
 		super();
 	}
 
-	public Article(int id, String title, String content, String image, Date postedDate, int author, int viewCount,
-                   int categoryId, boolean home, boolean active) {
+	public Article(long id, String title, String content, String image, Date postedDate, long author, int viewCount,
+                   long categoryId, boolean home, boolean active) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -37,11 +37,11 @@ public class Article {
         this.active = active;
     }
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -77,11 +77,11 @@ public class Article {
 		this.postedDate = postedDate;
 	}
 
-	public int getAuthor() {
+	public long getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(int author) {
+	public void setAuthor(long author) {
 		this.author = author;
 	}
 
@@ -93,11 +93,11 @@ public class Article {
 		this.viewCount = viewCount;
 	}
 
-	public int getCategoryId() {
+	public long getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(long categoryId) {
 		this.categoryId = categoryId;
 	}
 
@@ -122,13 +122,11 @@ public class Article {
 	}
 
 	public Object[] toInsertData() {
-		Object[] data = { title, content, image, postedDate, author, viewCount, categoryId, home };
-		return data;
+        return new Object[]{ title, content, image, postedDate, author, viewCount, categoryId, home };
 	}
 
 	public Object[] toUpdateData() {
-		Object[] data = { title, content, image, postedDate, author, viewCount, categoryId, home, id };
-		return data;
+        return new Object[]{ title, content, image, postedDate, author, viewCount, categoryId, home, id };
 	}
 	
 	public String getImagePath() {
