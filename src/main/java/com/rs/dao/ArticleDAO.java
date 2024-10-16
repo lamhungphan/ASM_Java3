@@ -59,7 +59,6 @@ public class ArticleDAO {
 
 	public static Article getNewsById(int id) throws SQLException {
 		String sql = "SELECT * FROM NEWS WHERE Id=?";
-		Article article = XJdbc.getSingleResult(Article.class, sql, id);
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
@@ -67,12 +66,11 @@ public class ArticleDAO {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-		return article;
+		return XJdbc.getSingleResult(Article.class, sql, id);
 	}
 
 	public static List<Article> getAllNews() throws SQLException {
 		String sql = "SELECT * FROM NEWS";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql);
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
@@ -80,12 +78,11 @@ public class ArticleDAO {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-		return articleList;
+		return XJdbc.getResultList(Article.class, sql);
 	}
 
 	public static List<Article> getAllHomeNews() throws SQLException {
-		String sql = "SELECT TOP 5 * FROM NEWS WHERE HOME = 1";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql);
+		String sql = "SELECT * FROM NEWS WHERE HOME = 1 LIMIT 5";
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
@@ -93,12 +90,11 @@ public class ArticleDAO {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-		return articleList;
+		return XJdbc.getResultList(Article.class, sql);
 	}
 
 	public static List<Article> getAllNewsByAuthor(int authorID) throws SQLException {
 		String sql = "SELECT * FROM NEWS WHERE Author = ?";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql, authorID);
 
 //        try (PreparedStatement stmt = connection.prepareStatement(sql);
 //             ResultSet rs = stmt.executeQuery()) {
@@ -106,24 +102,21 @@ public class ArticleDAO {
 //                newsList.add(rs.getString("Title"));
 //            }
 //        }
-		return articleList;
+		return XJdbc.getResultList(Article.class, sql, authorID);
 	}
 
 	public static List<Article> searchNews(String keyword) throws SQLException {
 		String sql = "SELECT NEWS.*" +
 				" FROM NEWS JOIN USERS ON NEWS.Author = USERS.Id JOIN CATEGORIES ON NEWS.CategoryId = CATEGORIES.Id " +
 				"WHERE Title like ? or Content like ? or USERS.Fullname like ? or CATEGORIES.Name like ?";
-        return XJdbc.getResultList(Article.class, sql, "%" + keyword + "%");
+        return XJdbc.getResultList(Article.class, sql, "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%");
 	}
 	
 	public static List<Article> searchNewsByAuthor(int authorID, String keyword) throws SQLException {
-		String sql = "SELECT NEWS.* FROM NEWS JOIN USERS ON NEWS.Author = USERS.Id WHERE USERS.Id = ? AND Title like ?";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql, "%" + keyword + "%");
-		sql = "SELECT NEWS.* FROM NEWS JOIN USERS ON NEWS.Author = USERS.Id WHERE USERS.Id = ? AND Content like ?";
-		articleList.addAll(XJdbc.getResultList(Article.class, sql, "%" + keyword + "%"));
-		sql = "SELECT NEWS.* FROM NEWS JOIN CATEGORIES ON NEWS.CategoryId = CATEGORIES.Id WHERE USERS.Id = ? AND CATEGORIES.Name like ?";
-		articleList.addAll(XJdbc.getResultList(Article.class, sql, "%" + keyword + "%"));
-		return articleList;
+		String sql = "SELECT NEWS.*" +
+				" FROM NEWS JOIN USERS ON NEWS.Author = USERS.Id JOIN CATEGORIES ON NEWS.CategoryId = CATEGORIES.Id " +
+				"WHERE USERS.Id = ? and ( Title like ? or Content like ? or USERS.Fullname like ? or CATEGORIES.Name like ? )";
+		return XJdbc.getResultList(Article.class, sql, authorID, "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%");
 	}
 
 	public static List<Article> searchAll(String keyword) throws SQLException {
@@ -142,32 +135,28 @@ public class ArticleDAO {
 
 	public static List<Article> getNewsByCategory(String categoryName) throws SQLException {
 		String sql = "SELECT NEWS.* FROM NEWS JOIN CATEGORIES ON NEWS.CategoryId = CATEGORIES.Id WHERE CATEGORIES.Name = ?";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql, categoryName);
-		return articleList;
+        return XJdbc.getResultList(Article.class, sql, categoryName);
 	}
 
 	public static List<Article> getNewsByDateRange(Date startDate, Date endDate) throws SQLException {
 		String sql = "SELECT * FROM NEWS WHERE PostedDate BETWEEN ? AND ?";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql, startDate, endDate);
-		return articleList;
+        return XJdbc.getResultList(Article.class, sql, startDate, endDate);
 	}
 	
 	public static List<Article> getLatestNews() throws SQLException {
-	    String sql = "SELECT TOP 5 * FROM NEWS ORDER BY PostedDate DESC";
-	    List<Article> articleList = XJdbc.getResultList(Article.class, sql);
-	    return articleList;
+	    String sql = "SELECT * FROM NEWS ORDER BY PostedDate DESC limit 5";
+        return XJdbc.getResultList(Article.class, sql);
 	}
 
 	public static List<Article> getTopNewsByViews() throws SQLException {
-		String sql = "SELECT TOP 5 * FROM NEWS ORDER BY ViewCount DESC";
-		List<Article> articleList = XJdbc.getResultList(Article.class, sql);
-		return articleList;
+		String sql = "SELECT * FROM NEWS ORDER BY ViewCount DESC limit 5";
+        return XJdbc.getResultList(Article.class, sql);
 	}
 
 	
 
 	public static List<Article> getRelatedNews(int categoryId, int newsId) throws SQLException {
-		String sql = "SELECT TOP 5 * FROM News WHERE categoryId = ? AND id <> ?";
+		String sql = "SELECT * FROM News WHERE categoryId = ? AND id <> ? limit 5";
 		return XJdbc.getResultList(Article.class, sql, categoryId, newsId);
 	}
 

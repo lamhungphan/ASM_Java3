@@ -42,7 +42,7 @@ public class RegisterServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.setAttribute("view", "/user/views/register.jsp");
+		request.setAttribute("view", "/user/register.jsp");
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 
@@ -87,7 +87,7 @@ public class RegisterServlet extends HttpServlet {
 			}
 			else {
 				request.setAttribute("errorMess", "Mã xác nhận sai, hãy nhập lại");
-				request.getRequestDispatcher("/user/views/confirmEmail.jsp").forward(request, response);
+				request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
 				return;
 			}
 		}
@@ -97,12 +97,12 @@ public class RegisterServlet extends HttpServlet {
 				User existingUser = UserDAO.getUserByEmail(email);
 				if (existingUser != null) {
 					request.setAttribute("errorEmail", "Email đã tồn tại, vui lòng sử dụng email khác");
-					request.setAttribute("view", "/user/views/register.jsp");
+					request.setAttribute("view", "/user/register.jsp");
 				}
 
 				else if (!password.equals(confirmPassword)) {
 					request.setAttribute("errorPassword", "Mật khẩu và mật khẩu xác nhận không khớp");
-					request.setAttribute("view", "/user/views/register.jsp");
+					request.setAttribute("view", "/user/register.jsp");
 				} else {
 					// Gửi mail cùng mã xác nhận
 					confirmKey = generateConfirmKey();
@@ -113,21 +113,21 @@ public class RegisterServlet extends HttpServlet {
 						request.getSession().setAttribute("regEmail", AES.encryptPassword(email, AES_KEY));
 						request.getSession().setAttribute("regPassword", PasswordUtil.hashPassword(password));
 						request.setAttribute("formAction", "/register/confirm");
-						request.getRequestDispatcher("/user/views/confirmEmail.jsp").forward(request, response);
+						request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
 						return;
 					} else {
 						request.setAttribute("errorPassword", "Mã xác nhận không khớp");
-						request.setAttribute("view", "/user/views/register.jsp");
+						request.setAttribute("view", "/user/register.jsp");
 					}
 				}
 			} catch (SQLException | ClassNotFoundException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 				e.printStackTrace();
 				request.setAttribute("error", "Có lỗi xảy ra, vui lòng thử lại sau");
-				request.setAttribute("view", "/user/views/register.jsp");
+				request.setAttribute("view", "/user/register.jsp");
 			}
 		} else {
 			request.setAttribute("error", "Vui lòng điền đầy đủ thông tin");
-			request.setAttribute("view", "/user/views/register.jsp");
+			request.setAttribute("view", "/user/register.jsp");
 		}
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}

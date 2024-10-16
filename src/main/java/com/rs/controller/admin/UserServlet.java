@@ -45,7 +45,7 @@ public class UserServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			request.setAttribute("action", "edit");
-			request.setAttribute("path", "/admin/views/userDetail.jsp");
+			request.setAttribute("path", "/admin/userDetail.jsp");
 		} else if (uri.contains("blank")) {
 			form = new User();
 			try {
@@ -56,10 +56,10 @@ public class UserServlet extends HttpServlet {
 			}
 			request.setAttribute("item", form);
 			request.setAttribute("action", "create");
-			request.setAttribute("path", "/admin/views/userDetail.jsp");
+			request.setAttribute("path", "/admin/userDetail.jsp");
 		}
 		else {
-			request.setAttribute("path", "/admin/views/userList.jsp");
+			request.setAttribute("path", "/admin/userList.jsp");
 			try {
 				List<User> list = UserDAO.getAllUsers();
 				request.setAttribute("list", list);
@@ -68,7 +68,7 @@ public class UserServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 
 	/**
@@ -120,8 +120,8 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("action", "create");
 		}
 		request.setAttribute("item", form);
-		request.setAttribute("path", "/admin/views/userDetail.jsp");
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.setAttribute("path", "/admin/userDetail.jsp");
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 
 }

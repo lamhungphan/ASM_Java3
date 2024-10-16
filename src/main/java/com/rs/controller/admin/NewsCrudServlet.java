@@ -65,7 +65,7 @@ public class NewsCrudServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-			request.setAttribute("path", "/admin/views/newsList.jsp");
+			request.setAttribute("path", "/admin/newsList.jsp");
 
 		} else if(path.contains("edit")) {
 			String id = request.getPathInfo().substring(1);
@@ -84,7 +84,7 @@ public class NewsCrudServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			request.setAttribute("path", "/admin/views/newsDetail.jsp");
+			request.setAttribute("path", "/admin/newsDetail.jsp");
 		}
 		else if(path.contains("blank")) {
 			article = new Article();
@@ -101,7 +101,7 @@ public class NewsCrudServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("path", "/admin/views/newsDetail.jsp");
+			request.setAttribute("path", "/admin/newsDetail.jsp");
 		}
 		else if(user.getRole()) {
 			try {
@@ -110,7 +110,7 @@ public class NewsCrudServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("path", "/admin/views/newsList.jsp");
+			request.setAttribute("path", "/admin/newsList.jsp");
 		}
 		else if(!user.getRole()) {
 			try {
@@ -119,9 +119,9 @@ public class NewsCrudServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("path", "/admin/views/newsList.jsp");
+			request.setAttribute("path", "/admin/newsList.jsp");
 		}
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 
 	/**
@@ -187,8 +187,8 @@ public class NewsCrudServlet extends HttpServlet {
 			request.setAttribute("article", article);
 			request.setAttribute("action", "create");
 		}
-		request.setAttribute("path", "/admin/views/newsDetail.jsp");
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.setAttribute("path", "/admin/newsDetail.jsp");
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 	
 	private void upload(HttpServletRequest request, Part img) throws IOException {

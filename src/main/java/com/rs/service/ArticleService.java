@@ -70,7 +70,7 @@ public class ArticleService {
         request.setAttribute("homePageList", homePageList);
         request.setAttribute("latestList", latestList);
         request.setAttribute("mostViewdList", mostViewdList);
-        request.setAttribute("view", "/user/views/home.jsp");
+        request.setAttribute("view", "/user/home.jsp");
         request.setAttribute("viewdList", viewdList);
     }
 
@@ -101,7 +101,7 @@ public class ArticleService {
             e.printStackTrace();
         }
         request.setAttribute("newsList", articleList);
-        request.setAttribute("view", "/user/views/newsList.jsp");
+        request.setAttribute("view", "/user/newsList.jsp");
     }
 
     public void detailPage() {
@@ -122,7 +122,7 @@ public class ArticleService {
         } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
         }
-        request.setAttribute("view", "/user/views/newsDetail.jsp");
+        request.setAttribute("view", "/user/newsDetail.jsp");
     }
 
     public void searchEngine() {
@@ -133,7 +133,7 @@ public class ArticleService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        request.setAttribute("view", "/user/views/newsList.jsp");
+        request.setAttribute("view", "/user/newsList.jsp");
 
     }
 }

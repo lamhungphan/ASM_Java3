@@ -70,7 +70,7 @@ public class CateCrudServlet extends HttpServlet {
 				throw new RuntimeException(e);
 			}
 		}
-		request.setAttribute("path", "/admin/views/category.jsp");
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.setAttribute("path", "/admin/category.jsp");
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 }

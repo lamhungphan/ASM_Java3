@@ -75,7 +75,7 @@ public class NewsLetterServlet extends HttpServlet {
 				request.getSession().setAttribute("confirmKey", key);
 				request.getSession().setAttribute("newsLetter", email);
 				request.setAttribute("formAction", "/subscribe/confirm");
-				request.getRequestDispatcher("/user/views/confirmEmail.jsp").forward(request, response);
+				request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
 				return;
 			}
 			else{
@@ -105,8 +105,8 @@ public class NewsLetterServlet extends HttpServlet {
 			response.sendRedirect("/SOF203_ASM/user/home");
 			return;
 		}
-		request.setAttribute("path", "/admin/views/letter.jsp");
-		request.getRequestDispatcher("/admin/views/index.jsp").forward(request, response);
+		request.setAttribute("path", "/admin/letter.jsp");
+		request.getRequestDispatcher("/admin/index.jsp").forward(request, response);
 	}
 
 	private String generateConfirmKey() {
