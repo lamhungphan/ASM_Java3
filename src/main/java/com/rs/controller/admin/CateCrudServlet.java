@@ -2,6 +2,7 @@ package com.rs.controller.admin;
 
 import com.rs.dao.CategoryDAO;
 import com.rs.entity.Category;
+import com.rs.service.CategoryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,45 +29,16 @@ public class CateCrudServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String path = request.getServletPath();
 		if(path.endsWith("category")) {
-			try {
-				List<Category> list = CategoryDAO.getAllCategories();
-				request.setAttribute("list", list);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				throw new ServletException(e);
-			}
-		}
-		else if(path.endsWith("category/insert")) {
-			Category c = new Category();
-			c.setName(request.getParameter("newCate"));
             try {
-                CategoryDAO.addCategory(c);
-				response.sendRedirect(request.getContextPath() + "/admin/category");
-				return;
-            } catch (SQLException | ClassNotFoundException e) {
+                new CategoryService(request, response).listPage();
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
-		else if(path.contains("update")) {
-			String id = request.getPathInfo().substring(1);
+		else {
 			try {
-				Category category = CategoryDAO.getCategoryById(Integer.parseInt(id));
-				category.setName(request.getParameter("updatedName"));
-				CategoryDAO.updateCategory(category);
-				response.sendRedirect(request.getContextPath() + "/admin/category");
-				return;
+				new CategoryService(request, response).IUD();
 			} catch (SQLException | ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				throw new RuntimeException(e);
-			}
-        }
-		else if(path.contains("delete")) {
-			try {
-				CategoryDAO.deleteCategory(Integer.parseInt(request.getPathInfo().substring(1)));
-				response.sendRedirect(request.getContextPath() + "/admin/category");
-				return;
-			} catch (SQLException | ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				throw new RuntimeException(e);
 			}
 		}

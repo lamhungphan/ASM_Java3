@@ -13,7 +13,7 @@
 					<div class="carousel-inner">
 						<c:forEach var="slider" items="${homePageList}" varStatus="status">
 							<div class="carousel-item ${status.index == 0 ? 'active' : ''}">
-								<img src="${slider.imagePath}" class="d-block w-100"
+								<img src="${pageContext.request.contextPath}${slider.imagePath}" class="d-block w-100"
 									alt="${slider.title}">
 								<div class="carousel-caption d-none d-md-block">
 									<h5>
@@ -48,7 +48,7 @@
 						<div class="row mb-3">
 							<div class="col-md-2">
 								<a href="${pageContext.request.contextPath}/user/detail/${viewd.id}"> <img
-									src="${viewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
+									src="${pageContext.request.contextPath}${viewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
 									style="max-width: 60%;">
 								</a>
 							</div>
@@ -73,7 +73,7 @@
 						<div class="row mb-3">
 							<div class="col-md-12 text-center">
 								<a href="${pageContext.request.contextPath}/user/detail/${lastest.id}"> <img
-									src="${lastest.imagePath}" class="img-fluid rounded" alt="Ảnh"
+									src="${pageContext.request.contextPath}${lastest.imagePath}" class="img-fluid rounded" alt="Ảnh"
 									style="max-width: 100%; height: auto;">
 								</a>
 								<h6 class="mt-2">
@@ -127,7 +127,7 @@
 					<div class="row mb-3">
 						<div class="col-md-2">
 							<a href="${pageContext.request.contextPath}/user/detail/${mostViewd.id}"> <img
-								src="${mostViewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
+								src="${pageContext.request.contextPath}${mostViewd.imagePath}" class="img-fluid rounded" alt="Ảnh"
 								style="max-width: 100%;">
 							</a>
 						</div>

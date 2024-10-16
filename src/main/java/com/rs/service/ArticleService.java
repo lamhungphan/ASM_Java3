@@ -70,8 +70,8 @@ public class ArticleService {
         request.setAttribute("homePageList", homePageList);
         request.setAttribute("latestList", latestList);
         request.setAttribute("mostViewdList", mostViewdList);
-        request.setAttribute("viewdList", viewdList);
         request.setAttribute("view", "/user/home.jsp");
+        request.setAttribute("viewdList", viewdList);
     }
 
     public void listPage() {
@@ -134,6 +134,7 @@ public class ArticleService {
             e.printStackTrace();
         }
         request.setAttribute("view", "/user/newsList.jsp");
-
     }
+
+
 }

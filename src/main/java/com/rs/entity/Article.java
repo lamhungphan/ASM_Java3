@@ -130,7 +130,7 @@ public class Article {
 	}
 	
 	public String getImagePath() {
-	    return "/SOF203_ASM_Final/photo/" + this.image;
+	    return "/photo/" + this.image;
 	}
 
 	public String getExcerpt() {

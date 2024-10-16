@@ -6,7 +6,7 @@
         <h1 class="mb-4 text-center"></h1>
         <div class="row">
             <div class="col-md-4">
-                <img src="${article.imagePath}" class="img-fluid rounded" alt="Ảnh chi tiết" style="max-width: 100%;">
+                <img src="${pageContext.request.contextPath}${article.imagePath}" class="img-fluid rounded" alt="Ảnh chi tiết" style="max-width: 100%;">
             </div>
             <div class="col-md-8">
                 <h5 class="text-primary" style="text-decoration: none;">${article.title}</h5>
@@ -26,7 +26,7 @@
                 <c:forEach var="relatedNews" items="${relatedNewsList}">
                     <div class="col-md-4">
                         <div class="card mb-3">
-                            <img src="${relatedNews.imagePath}" class="card-img-top" alt="Tin tức liên quan" style="width: 100%; height: auto;">
+                            <img src="${pageContext.request.contextPath}${relatedNews.imagePath}" class="card-img-top" alt="Tin tức liên quan" style="width: 100%; height: auto;">
                             <div class="card-body">
                                 <h5 class="card-title">${relatedNews.title}</h5>
                                 <p class="card-text">${relatedNews.excerpt}</p>
