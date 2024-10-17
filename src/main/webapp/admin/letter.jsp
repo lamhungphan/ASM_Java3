@@ -6,7 +6,7 @@
 	<table class="table table-bordered">
 		<thead class="table-light">
 			<tr>
-				<c:forTokens var="col" items="Email,Enabled" delims=",">
+				<c:forTokens var="col" items="No.,Email,Enabled" delims=",">
 					<th>${col}</th>
 				</c:forTokens>
 			</tr>

@@ -12,7 +12,7 @@
 </head>
 <body>
 <c:url var="root" value="/user"/>
-	<form action="${root}${formAction}" method="post">
+	<form action="${pageContext.request.contextPath}${formAction}">
 		<label>Mã xác nhận đã được gửi, hãy nhập mã vào ô trống bên
 			dưới</label><br> <input type="text" required="required" name="confirm"><br>
 		<button>Xác nhận</button><br>
