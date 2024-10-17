@@ -48,6 +48,19 @@ public final class XJdbc {
 		}
 	}
 
+	private static List<Map<String, Object>> parseResultSet(ResultSet rs) throws SQLException {
+		List<Map<String, Object>> maps = new ArrayList<>();
+		while (rs.next()) {
+			Map<String, Object> map = new HashMap<>();
+			ResultSetMetaData data = rs.getMetaData();
+			for (int i = 0; i < data.getColumnCount(); i++) {
+				map.put(data.getColumnName(i + 1), rs.getObject(i + 1));
+			}
+			maps.add(map);
+		}
+		return maps;
+	}
+
 	public static final List<Map<String, Object>> select(String sql, Object... args)
 			throws SQLException, ClassNotFoundException {
 		List<Map<String, Object>> maps = new ArrayList<>();
@@ -58,18 +71,10 @@ public final class XJdbc {
 				}
 			}
 			try (ResultSet rs = pst.executeQuery()) {
-				while (rs.next()) {
-					Map<String, Object> map = new HashMap<>();
-					ResultSetMetaData data = rs.getMetaData();
-					for (int i = 0; i < data.getColumnCount(); i++) {
-						map.put(data.getColumnName(i + 1), rs.getObject(i + 1));
-					}
-					maps.add(map);
-				}
+				return parseResultSet(rs);
 			}
 		}
-		return maps;
-	}
+    }
 
 	public static final Object getValue(String sql, Object... args) throws SQLException, ClassNotFoundException {
 		List<Map<String, Object>> list = select(sql, args);
@@ -90,35 +95,22 @@ public final class XJdbc {
 		}
 	}
 
-	public static final Object callNoOutput(String sql, Object... args) throws SQLException, ClassNotFoundException {
+	public static Object callProcedure(String sql, int output, SQLType sqlType, Object... args)
+			throws SQLException {
 		boolean result;
 		try (CallableStatement cst = con.prepareCall(sql)) {
 			if (args.length > 0) {
 				for (int i = 0; i < args.length; i++) {
 					cst.setObject(i + 1, args[i]);
 				}
-			}
-			result = cst.execute();
-			Object packedRs = cst.getResultSet();
-			Integer updateCount = cst.getUpdateCount();
-			return result ? packedRs : updateCount;
-		}
-	}
-
-	public static final Object callWithOutput(String sql, Object[] args, int output, SQLType sqlType)
-			throws SQLException, ClassNotFoundException {
-		boolean result;
-		try (CallableStatement cst = con.prepareCall(sql)) {
-			if (args.length > 0) {
-				for (int i = 0; i < args.length; i++) {
-					cst.setObject(i + 1, args[i]);
+				if(output>0&&sqlType!=null){
+					cst.registerOutParameter(output, sqlType);
 				}
-				cst.registerOutParameter(output, sqlType);
 			}
 			result = cst.execute();
-			Object packedRs = cst.getResultSet();
-			Integer updateCount = cst.getUpdateCount();
-			return result ? packedRs : updateCount;
+			List<Map<String, Object>> maps = parseResultSet(cst.getResultSet());
+			int updateCount = cst.getUpdateCount();
+			return result ? maps : updateCount;
 		}
 
 	}
@@ -179,6 +171,23 @@ public final class XJdbc {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * Chuyển đổi danh sách map sang &lt;T&gt; <br>
+	 * Ví dụ:
+	 *
+	 * <pre>
+	 * List&lt;Map&lt;String,Object&gt;&gt; maps
+	 * List&lt;User&gt; list = XJdbc.getResultList(User.class, maps);
+	 * </pre>
+	 */
+	public static <T> List<T> getResultList(Class<T> beanClass, List<Map<String, Object>> maps) {
+        List<T> entities = new ArrayList<>();
+        for (Map<String, Object> map : maps) {
+            entities.add(getBean(beanClass, map));
+        }
+        return entities;
+    }
 
 	/**
 	 * Truy vấn bản ghi và chuyển đổi sang Bean <br>
