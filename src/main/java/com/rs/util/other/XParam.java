@@ -63,7 +63,6 @@ public class XParam {
 			part.write(file.getAbsolutePath());
 			return file;
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
