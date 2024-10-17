@@ -13,8 +13,8 @@ import java.util.List;
 
 public class CategoryService {
     List<Category> list;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
     public CategoryService(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
@@ -43,7 +43,7 @@ public class CategoryService {
             }
             else if(path.contains("update")){
                 c = CategoryDAO.getCategoryById(Integer.parseInt(id));
-                c.setName(request.getParameter("updatedName"));
+                c.setName(request.getParameter("update"+id));
                 CategoryDAO.updateCategory(c);
                 response.sendRedirect(request.getContextPath() + "/admin/category");
             }

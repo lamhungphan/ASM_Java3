@@ -50,34 +50,69 @@ public class NewsLetterService {
 
     public void subscribe() throws IOException, ServletException, SQLException, ClassNotFoundException {
         String path = request.getServletPath();
-        String email = request.getParameter("email");
-        Boolean check = NewsLetterDAO.checkEnabled(email);
+
+
         if (path.endsWith("subscribe")) {
-            if (Boolean.TRUE.equals(check)) {
-                request.setAttribute("message", "Email đã được đăng ký");
-                request.getRequestDispatcher(request.getContextPath() + "/user/home").forward(request, response);
+            String email = request.getParameter("email");
+
+            // Kiểm tra email
+            if (email == null || email.isEmpty()) {
+                request.setAttribute("textColor", "text-red");
+                request.setAttribute("errorMess", "Email không hợp lệ");
+                request.getRequestDispatcher("/user/home").forward(request, response);
                 return;
             }
+            Boolean check = NewsLetterDAO.checkEnabled(email);
+            if (Boolean.TRUE.equals(check)) {
+                request.setAttribute("textColor", "text-red");
+                request.setAttribute("errorMess", "Email đã được đăng ký");
+                request.getRequestDispatcher("/user/home").forward(request, response);
+                return;
+            }
+
             String key = generateConfirmKey();
             try {
                 XMailer.send(email, "Mã xác nhận", key);
                 request.getSession().setAttribute("confirmKey", key);
                 request.getSession().setAttribute("newsLetter", email);
-                request.setAttribute("formAction", "/subscribe/confirm");
+                request.setAttribute("formAction", "/letter/subscribe/confirm");
                 request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
             } catch (MessagingException e) {
-                request.setAttribute("errorMess", "Có lỗi xảy ra, hãy thử lại sau");
-                request.getRequestDispatcher(request.getContextPath() + "/user/home").forward(request, response);
-                throw new RuntimeException(e);
+                request.setAttribute("textColor", "text-red");
+                request.setAttribute("errorMess", "Có lỗi xảy ra khi gửi email, hãy thử lại sau");
+                request.getRequestDispatcher("/user/home").forward(request, response);
             }
         } else if (path.endsWith("confirm")) {
+            String key = (String) request.getSession().getAttribute("confirmKey");
+            String keyInput = request.getParameter("confirm");
+            if(!key.equals(keyInput)) {
+                request.setAttribute("errorMess", "Mã xác nhận không hợp lệ");
+                request.setAttribute("formAction", "/letter/subscribe/confirm");
+                request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
+                return;
+            }
+            request.getSession().setAttribute("confirmKey", null);
+            String email = (String) request.getSession().getAttribute("newsLetter");
+
+            if (email == null) {
+                request.setAttribute("textColor", "text-red");
+                request.setAttribute("errorMess", "Không tìm thấy email để xác nhận");
+                request.getRequestDispatcher("/user/home").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra lại trạng thái email
+            Boolean check = NewsLetterDAO.checkEnabled(email);
+
             if (check == null) {
                 NewsLetterDAO.addNewsletter(new Newsletter(email, true));
             } else if (!check) {
                 NewsLetterDAO.updateNewsletter(new Newsletter(email, true));
             }
+            request.getSession().setAttribute("newsLetter", null);
+            request.setAttribute("textColor", "text-green");
             request.setAttribute("message", "Đăng ký thành công");
-            request.getRequestDispatcher(request.getContextPath() + "/user/home").forward(request, response);
+            request.getRequestDispatcher("/user/home").forward(request, response);
         }
     }
 

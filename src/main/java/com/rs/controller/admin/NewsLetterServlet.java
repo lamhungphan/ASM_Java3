@@ -45,5 +45,4 @@ public class NewsLetterServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 	}
-
 }

@@ -216,7 +216,7 @@ public class UserService {
                     XMailer.send(email, "Mã xác nhận", key);
                     request.getSession().setAttribute("confirmKey", key);
                     request.getSession().setAttribute("passChangeId", temp.getId());
-                    request.setAttribute("formAction", "/forgetPass/confirm");
+                    request.setAttribute("formAction", "/user/forgetPass/confirm");
                     request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
                 } catch (MessagingException e) {
                     request.setAttribute("error", "Có lỗi xảy ra");
@@ -237,7 +237,7 @@ public class UserService {
             response.sendRedirect(request.getContextPath() + "/user/forgetPass");
         } else {
             request.setAttribute("errorMess", "Mã xác nhận không hợp lệ");
-            request.setAttribute("formAction", "/forgetPass/confirm");
+            request.setAttribute("formAction", "/user/forgetPass/confirm");
             request.getRequestDispatcher("/user/confirmEmail.jsp").forward(request, response);
         }
     }

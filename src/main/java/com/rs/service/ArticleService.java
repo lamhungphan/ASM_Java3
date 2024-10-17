@@ -54,13 +54,12 @@ public class ArticleService {
         mostViewedList = ArticleDAO.getTopNewsByViews();
         viewedList = new ArrayList<>();
 
-        viewedList = new ArrayList<>();
         String[] viewedIds;
         XCookie xCookie = new XCookie(request, response);
         viewedIds = xCookie.getValue("viewedArticles").split("C");
 
         for (String id : viewedIds) {
-            if(id!=null && !id.isBlank()){
+            if (id != null && !id.isBlank()) {
                 Article article = ArticleDAO.getNewsById(Integer.parseInt(id));
                 viewedList.add(article);
                 if (viewedList.size() == 6) {
